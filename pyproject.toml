@@ -1,0 +1,78 @@
+[build-system]
+build-backend = "flit_core.buildapi"
+requires = [
+    "flit_core >=3.4,<4",
+    "importlib_metadata>=0.7; python_version < '3.8'",
+]
+
+
+[project]
+name = "shadows"
+description = "Low-memory data interfaces for scverse"
+authors = [
+    {name = "Danila Bredikhin"},
+]
+maintainers = [
+    {name = "Danila Bredikhin", email = "danila.bredikhin@scverse.org"},
+]
+urls.Documentation = "https://scverse.github.io/shadows"
+urls.Source = "https://github.com/scverse/shadows"
+urls.Home-page = "https://github.com/scverse/shadows"
+requires-python = ">=3.8"
+license = {file = "LICENSE"}
+readme = "README.md"
+dynamic = ["version"]
+dependencies = [
+    "pyarrow",
+]
+
+[project.optional-dependencies]
+dev = [
+    # dev version generation
+]
+doc = [
+    "sphinx",
+    "myst-parser",
+    "sphinx-book-theme",
+    "readthedocs-sphinx-search",
+    "nbsphinx",
+    "sphinx-automodapi",
+    "sphinxcontrib-bibtex",
+    "sphinx-autodoc-typehints",
+]
+test = [
+    "scipy",
+    "pytest",
+    "pytest-cov",
+]
+all = [
+    "scipy",
+    "anndata >= 0.8",
+    "mudata >= 0.2",
+]
+
+[tool.coverage.run]
+source = ["shadows"]
+omit = [
+    "**/test_*.py",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+xfail_strict = true
+addopts = [
+    # '-Werror',  # if 3rd party libs raise DeprecationWarnings, just use filterwarnings below
+    '--import-mode=importlib',  # allow using test files with same name
+]
+filterwarnings = [
+    # 'ignore:.*mode is deprecated:DeprecationWarning',
+]
+
+[tool.isort]
+multi_line_output = 3
+profile = "black"
+skip = []
+
+[tool.jupytext]
+formats = "ipynb,md"
+
