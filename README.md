@@ -6,6 +6,8 @@ Shadows are on-disk interfaces for scverse data standards such as [AnnData](http
 
 It is an experimental project.
 
+[![PyPi version](https://img.shields.io/pypi/v/shadows)](https://pypi.org/project/shadows)
+
 ## Installation
 
 ```
