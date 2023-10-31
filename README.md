@@ -1,4 +1,4 @@
-<import img src="./docs/img/shadows_header.jpg" data-canonical-src="./docs/img/shadows_header.svg" width="700"/>
+<img src="./docs/img/shadows_header.jpg" data-canonical-src="./docs/img/shadows_header.svg" width="100%"/>
 
 # Shadows
 
