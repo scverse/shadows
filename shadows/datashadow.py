@@ -6,6 +6,7 @@ import ctypes
 from warnings import warn
 
 import numpy as np
+
 # FIXME: import only when needed
 import h5py
 
@@ -21,6 +22,9 @@ from .elemshadow import ElemShadow, _get_backend_reader
 ArrayStorageType = Union[ZarrArray, H5Array]
 GroupStorageType = Union[ZarrGroup, H5Group]
 StorageType = Union[ArrayStorageType, GroupStorageType]
+
+
+RUNECACHED = "\u1401"
 
 
 class DataShadow:
@@ -475,17 +479,17 @@ class DataShadow:
     def clear_cache(self):
         keys = list(self.__dict__.keys())
         slots = [
-                    "X",
-                    "obs",
-                    "obsm",
-                    "var",
-                    "varm",
-                    "obsp",
-                    "varp",
-                    "layers",
-                    "raw",
-                    "uns",
-                ]
+            "X",
+            "obs",
+            "obsm",
+            "var",
+            "varm",
+            "obsp",
+            "varp",
+            "layers",
+            "raw",
+            "uns",
+        ]
         _slots = [f"_{slot}" for slot in slots]
         for key in keys:
             if (
