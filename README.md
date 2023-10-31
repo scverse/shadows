@@ -31,7 +31,7 @@ The shadows library aims to implement the following features:
 
 ### Shadow objects
 
-[Example notebook](/docs/examples/shadow-objects.ipynb) | [More features](/docs/examples/shadow-objects-features.ipynb)
+[Example notebook](/docs/examples/shadow-objects.ipynb) | [More features](/docs/examples/shadows-features.ipynb)
 
 Briefly, it simply works like this:
 
