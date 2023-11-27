@@ -18,7 +18,7 @@ maintainers = [
 urls.Documentation = "https://scverse.github.io/shadows"
 urls.Source = "https://github.com/scverse/shadows"
 urls.Home-page = "https://github.com/scverse/shadows"
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 license = {file = "LICENSE"}
 readme = "README.md"
 dynamic = ["version"]
