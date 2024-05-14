@@ -1,59 +1,79 @@
 from typing import Optional
 from collections.abc import MutableMapping
-from functools import cached_property
+from functools import cached_property, partial
 from os import path
-import ctypes
 from warnings import warn
 
-import numpy as np
 import h5py
 
 # For simplicity, use AnnData read_elem/write_elem
 from anndata._io.specs import read_elem, write_elem
-from anndata._core.index import _normalize_indices
+from anndata.compat import H5Group, ZarrGroup
 
 RUNECACHED = "\u1401"
-RUNECACHEDALT = "\u25BC"
-RUNENEW = "\u25B2"
+RUNECACHEDALT = "\u25bc"
+RUNENEW = "\u25b2"
 
 
-def _get_backend_reader(backend):
+class LazyReader:
+    def __init__(self, reader, data):
+        self.reader = reader
+        self.data = data
+        self.f = lambda data, slice: reader(data[slice])
+        self.partial = partial(self.f, self.data)
+
+    def __call__(self, value):
+        return self.partial(value)
+
+    def __getitem__(self, value):
+        return self.partial(value)
+
+
+def _get_backend_reader(backend, lazy: bool = False):
     if callable(backend):
-        return backend
+        reader = backend
     else:
         if backend == "numpy":
             import numpy as np
 
             # TODO: Handle sparsity
-            return np.array
+            reader = np.array
 
         elif backend == "jax":
             import jax.numpy as jnp
 
-            return jnp.array
+            reader = jnp.array
 
         elif backend == "torch" or backend == "pytorch":
             import torch
 
-            return torch.Tensor
+            reader = torch.Tensor
 
         elif backend == "pandas":
             import pandas as pd
 
-            return pd.DataFrame
+            reader = pd.DataFrame
 
         elif backend == "polars":
             import polars as pl
 
-            return pl.from_dict
+            reader = pl.from_dict
 
         elif backend == "arrow" or backend == "pyarrow":
             import pyarrow as pa
 
-            return pa.Table.from_pydict
+            reader = pa.Table.from_pydict
 
         else:
             return NotImplementedError
+
+    if lazy:
+        base_reader = reader
+
+        def reader(data):
+            return LazyReader(base_reader, data)
+
+    return reader
 
 
 class EmptySlot:
@@ -103,6 +123,8 @@ class ElemShadow(MutableMapping):
             return self._newelems[value]
         else:
             value_elem = self._group[value]
+            # is_group = type(value_elem).__name__ == 'Group'  # h5py.Group, zarr.hierarchy.Group
+            is_group = isinstance(value_elem, (H5Group, ZarrGroup))
 
             # Return the nested ElemShadow
             if value_path in self._nested:
@@ -110,8 +132,14 @@ class ElemShadow(MutableMapping):
 
             # Directly read it if it is a scalar dataset
             # NOTE: Sparse matrices and data frames are groups
-            elif not isinstance(value_elem, h5py.Group) and value_elem.shape == ():
+            elif not is_group and value_elem.shape == ():
                 value_out = self._group[value][()]
+                if isinstance(value_out, bytes):
+                    try:
+                        # bytes -> string
+                        value_out = value_out.decode()
+                    except AttributeError:
+                        pass
 
             elif self._array_backend == "numpy" and self._table_backend == "pandas":
                 value_out = read_elem(self._group[value])

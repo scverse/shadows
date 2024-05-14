@@ -1,17 +1,12 @@
 from .datashadow import DataShadow
 
 from typing import Optional
-from collections.abc import MutableMapping
 from functools import cached_property
 from os import path
-import ctypes
-from warnings import warn
 
 import numpy as np
-import h5py
 
 # For simplicity, use AnnData read_elem/write_elem
-from anndata._io.specs import read_elem, write_elem
 from anndata._core.index import _normalize_indices
 from anndata import AnnData
 
@@ -20,8 +15,8 @@ from .elemshadow import ElemShadow, RawElemShadow, _get_backend_reader
 
 
 RUNECACHED = "\u1401"
-RUNECACHEDALT = "\u25BC"
-RUNENEW = "\u25B2"
+RUNECACHEDALT = "\u25bc"
+RUNENEW = "\u25b2"
 
 
 class AnnDataShadow(DataShadow):
@@ -38,7 +33,10 @@ class AnnDataShadow(DataShadow):
             mode = shadow.file.mode
 
         if shadow.root != "/":
-            filename = path.join(filename, shadow.root)
+            filename = path.join(
+                filename,
+                shadow.root[1:] if shadow.root.startswith("/") else shadow.root,
+            )
         view = AnnDataShadow(
             filename,
             array_backend=shadow._array_backend,
@@ -49,7 +47,7 @@ class AnnDataShadow(DataShadow):
 
         # NOTE: Cache is not preserved in a new object
 
-        view.is_view = True
+        view._is_view = True
         view._ref = shadow
         view._oidx = oidx
         view._vidx = vidx
@@ -57,19 +55,36 @@ class AnnDataShadow(DataShadow):
         if shadow.is_view:
             view._ref = shadow._ref
             if shadow._oidx is not None:
-                if isinstance(shadow._oidx, slice):
+                if isinstance(shadow._oidx, slice) and isinstance(
+                    oidx, (int, np.integer, slice)
+                ):
                     r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(
                         oidx
                     )
+                    if isinstance(r, (int, np.integer)):
+                        view._oidx = np.array([r])
                     view._oidx = slice(r.start, r.stop, r.step)
+                elif isinstance(shadow._oidx, slice):
+                    view._oidx = np.arange(*shadow._oidx.indices(shadow._ref.n_obs))[
+                        oidx
+                    ]
                 else:
                     view._oidx = shadow._oidx[oidx]
             if shadow._vidx is not None:
-                if isinstance(shadow._vidx, slice):
+                if isinstance(shadow._vidx, slice) and isinstance(
+                    vidx, (int, np.integer, slice)
+                ):
                     r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(
                         vidx
                     )
-                    view._vidx = slice(r.start, r.stop, r.step)
+                    if isinstance(r, (int, np.integer)):
+                        view._vidx = np.array([r])
+                    else:
+                        view._vidx = slice(r.start, r.stop, r.step)
+                elif isinstance(shadow._vidx, slice):
+                    view._vidx = np.arange(*shadow._vidx.indices(shadow._ref.n_vars))[
+                        vidx
+                    ]
                 else:
                     view._vidx = shadow._vidx[vidx]
 
@@ -77,7 +92,7 @@ class AnnDataShadow(DataShadow):
 
     @cached_property
     def _X(self):
-        reader = _get_backend_reader(self._array_backend)
+        reader = _get_backend_reader(self._array_backend, self._lazy)
         if self.is_view:
             if (
                 isinstance(self._vidx, slice)
@@ -95,7 +110,7 @@ class AnnDataShadow(DataShadow):
                 # Only one indexing array at a time is possible
                 x = reader(self.file[self.root]["X"][self._oidx][:, self._vidx])
         else:
-            x = reader(self.file[self.root]["X"][:])
+            x = reader(self.file[self.root]["X"])
         self._ids["X"] = id(x)
         return x
 

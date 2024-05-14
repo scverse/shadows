@@ -1,15 +1,8 @@
-from typing import Optional
-from collections.abc import MutableMapping
 from functools import cached_property
 from os import path
-import ctypes
-from warnings import warn
 
-import numpy as np
-import h5py
 
 # For simplicity, use AnnData read_elem/write_elem
-from anndata._io.specs import read_elem, write_elem
 from anndata._core.index import _normalize_indices
 
 
@@ -64,7 +57,7 @@ class MuDataShadow(DataShadow):
 
         # NOTE: Cache is not preserved in a new object
 
-        view.is_view = True
+        view._is_view = True
         view._ref = shadow
         view._oidx = oidx
         view._vidx = vidx

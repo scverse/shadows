@@ -1,20 +1,17 @@
 from typing import Literal, Optional, Union
-from collections.abc import MutableMapping
 from functools import cached_property
 from os import path
 import ctypes
 from warnings import warn
 
-import numpy as np
 
 # FIXME: import only when needed
 import h5py
 
 # For simplicity, use AnnData read_elem/write_elem
-from anndata._io.specs import read_elem, write_elem
+from anndata._io.specs import read_elem
 from anndata._core.index import _normalize_indices
 from anndata.compat import H5Array, H5Group, ZarrArray, ZarrGroup
-from anndata import AnnData
 
 from .elemshadow import ElemShadow, _get_backend_reader
 
@@ -35,6 +32,7 @@ class DataShadow:
         table_backend: str = "pandas",
         mode: str = "r",
         format: Literal["hdf5", "zarr"] = "hdf5",
+        lazy: bool = False,
     ):
         if format == "zarr":
             import zarr
@@ -52,7 +50,7 @@ class DataShadow:
                 self.file = h5py.File(filepath, mode=mode)
                 self.root = "/"
         else:
-            file, root = filepath, "/"
+            root = "/"
             file_exists = False
             i = 1
             if not isinstance(filepath, str):
@@ -86,9 +84,12 @@ class DataShadow:
         self._format = "zarr" if format == "zarr" else "hdf5"
 
         # View-related attributes
-        self.is_view = False
+        self._is_view = False
         self._oidx = None
         self._vidx = None
+
+        # Laziness behaviour
+        self._lazy = lazy
 
     @classmethod
     def _init_as_view(cls, shadow, oidx, vidx):
@@ -111,7 +112,7 @@ class DataShadow:
 
         # NOTE: Cache is not preserved in a new object
 
-        view.is_view = True
+        view._is_view = True
         view._ref = shadow
         view._oidx = oidx
         view._vidx = vidx
@@ -140,7 +141,7 @@ class DataShadow:
     @cached_property
     def _obs(self):
         # Use anndata v0.8 spec reader
-        reader = _get_backend_reader(self._table_backend)
+        reader = _get_backend_reader(self._table_backend, self._lazy)
         obs = self.file[self.root]["obs"]
         columns = {}
 
@@ -199,7 +200,7 @@ class DataShadow:
     @cached_property
     def _var(self):
         # Use anndata v0.8 spec reader
-        reader = _get_backend_reader(self._table_backend)
+        reader = _get_backend_reader(self._table_backend, self._lazy)
         var = self.file[self.root]["var"]
         columns = {}
 
@@ -253,29 +254,53 @@ class DataShadow:
     def var(self):
         return self._var
 
-    @cached_property
-    def _obs_names(self):
-        obs = self.file[self.root]["obs"]
+    def __names(self, axis: str):
+        """
+        Internal method to get the names of the obs or var axis
+        """
+        assert axis in ["obs", "var"], "axis must be 'obs' or 'var'"
+
+        from pandas import Index
+
+        attr = self.file[self.root][axis]
 
         # Handle legacy
-        if isinstance(obs, ArrayStorageType):
-            obs_df = self.obs
-            if "index" in obs_df.columns:
-                return obs_df["index"].values
-            elif len(obs_df.columns) > 0:
-                index = obs_df.columns[0]
-                return obs_df[index].values
+        if isinstance(attr, ArrayStorageType):
+            attr_df = self.getattr(axis)
+            if "index" in attr_df.columns:
+                names = Index(attr_df["index"].values)
+            elif len(attr_df.columns) > 0:
+                index = attr_df.columns[0]
+                names = Index(attr_df[index].values)
             else:
-                raise ValueError("Empty obs_names")
+                raise ValueError(f"Empty {axis}_names")
 
-        index = "_index"
-        if "_index" in obs.attrs:
-            index = obs.attrs["_index"]
+        else:
+            index = "_index"
+            if "_index" in attr.attrs:
+                index = attr.attrs["_index"]
 
-        if self.is_view:
-            return self.file[self.root]["obs"][index][:][self._oidx]
+            if self.is_view:
+                indices = self._oidx if axis == "obs" else self._vidx
+                names = Index(self.file[self.root][axis][index][:][indices])
+            else:
+                names = Index(self.file[self.root][axis][index][:])
 
-        return self.file[self.root]["obs"][index][:]
+        # only string index
+        if all(names.map(type) == bytes):
+            try:
+                names = names.str.decode("utf-8")
+            except AttributeError:
+                pass
+
+        return names
+
+    @cached_property
+    def _obs_names(self):
+        """
+        Note: currently, anndata relies on pd.Index here
+        """
+        return self.__names("obs")
 
     @property
     def obs_names(self):
@@ -283,25 +308,10 @@ class DataShadow:
 
     @cached_property
     def _var_names(self):
-        var = self.file[self.root]["var"]
-
-        # Handle legacy
-        if isinstance(var, ArrayStorageType):
-            var_df = self.var
-            if "index" in var_df.columns:
-                return var_df["index"].values
-            elif len(var_df.columns) > 0:
-                index = var_df.columns[0]
-                return var_df[index].values
-            else:
-                raise ValueError("Empty var_names")
-
-        index = "_index"
-        if "_index" in var.attrs:
-            index = var.attrs["_index"]
-        if self.is_view:
-            return self.file[self.root]["obs"][index][:][self._vidx]
-        return self.file[self.root]["var"][index][:]
+        """
+        Note: currently, anndata relies on pd.Index here
+        """
+        return self.__names("var")
 
     @property
     def var_names(self):
@@ -380,6 +390,9 @@ class DataShadow:
     def obsm(self):
         return self._obsm
 
+    def obsm_keys(self) -> list[str]:
+        return list(self._obsm.keys())
+
     @cached_property
     def _varm(self):
         group_storage = (
@@ -401,6 +414,9 @@ class DataShadow:
     @property
     def varm(self):
         return self._varm
+
+    def varm_keys(self) -> list[str]:
+        return list(self._varm.keys())
 
     @cached_property
     def _obsp(self):
@@ -465,7 +481,9 @@ class DataShadow:
             )
             for key in root.keys():
                 # if hasattr(root[key], "keys"):
-                if isinstance(root[key], h5py.Group) and hasattr(root[key], "keys"):
+                if isinstance(root[key], (H5Group, ZarrGroup)) and hasattr(
+                    root[key], "keys"
+                ):
                     s[key] = map_get_keys(root[key])
             return s
 
@@ -587,6 +605,10 @@ class DataShadow:
         oidx, vidx = _normalize_indices(index, self.obs_names, self.var_names)
         return DataShadow._init_as_view(self, oidx, vidx)
 
+    @property
+    def is_view(self):
+        return self._is_view
+
     # Legacy methods for scanpy compatibility
 
     def _sanitize(self):
@@ -625,3 +647,15 @@ class DataShadow:
         else:
             self._push_changes(*args, **kwargs)
         return self
+
+    # Laziness
+
+    def lazy(self):
+        self._lazy = True
+
+    def eager(self):
+        self._lazy = False
+
+    @property
+    def is_lazy(self):
+        return self._lazy
