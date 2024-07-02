@@ -4,16 +4,20 @@ on: [push]
 jobs:
   docs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
-    - uses: actions/checkout@v3
-    - uses: actions/setup-python@v4
+    - uses: actions/checkout@v4
+    - name: Build HTML
+      uses: ammaraskar/sphinx-action@master
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
       with:
-        python-version: "3.11"
-    - run: pip install .[develop]
-    - run: sudo apt-get install -y pandoc
-    - name: Running the Sphinx to gh-pages Action
-      uses: uibcdf/action-sphinx-docs-to-gh-pages@v1.0.0
+        name: html-docs
+        path: docs/build/html/
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v3
+      if: github.ref == 'refs/heads/main'
       with:
-        branch: main
-        dir_docs: docs
-        sphinxopts: ''
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: docs/build/html
