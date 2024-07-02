@@ -1,0 +1,1126 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="../">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="../genindex.html" /><link rel="search" title="Search" href="../search.html" /><link rel="next" title="Shadows features" href="shadows-features.html" /><link rel="prev" title="Examples" href="index.html" />
+
+    <!-- Generated with Sphinx 7.3.7 and Furo 2024.05.06 -->
+        <title>Shadow objects - shadows documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo.css?v=387cc868" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/furo-extensions.css?v=36a5483c" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-half" viewBox="0 0 24 24">
+    <title>Auto light/dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-shadow">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+      <circle cx="12" cy="12" r="9" />
+      <path d="M13 12h5" />
+      <path d="M13 15h4" />
+      <path d="M13 18h1" />
+      <path d="M13 9h4" />
+      <path d="M13 6h1" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" /
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../index.html"><div class="brand">shadows  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../index.html">
+  
+  
+  <span class="sidebar-brand-text">shadows  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1 current has-children"><a class="reference internal" href="index.html">Examples</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" role="switch" type="checkbox"/><label for="toctree-checkbox-1"><div class="visually-hidden">Toggle navigation of Examples</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul class="current">
+<li class="toctree-l2 current current-page"><a class="current reference internal" href="#">Shadow objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shadows-features.html">Shadows features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shadows-zarr.html">Shadows for zarr</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="../_sources/examples/shadow-objects.ipynb.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+<span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="s2">&quot;../../&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="s2">&quot;data/&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># We will only use them for plotting below</span>
+<span class="kn">import</span> <span class="nn">scanpy</span> <span class="k">as</span> <span class="nn">sc</span>
+<span class="kn">import</span> <span class="nn">muon</span> <span class="k">as</span> <span class="nn">mu</span>
+</pre></div>
+</div>
+</div>
+<p>Throughout the notebook we will also track how much memory the notebook consumes after loading different objects into memory.</p>
+<p>This won’t provide exact measurement but will allow to see the order of magnitude of memory consumption:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">psutil</span>
+<span class="k">def</span> <span class="nf">measure_memory</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span> <span class="o">/</span> <span class="mi">1024</span> <span class="o">**</span> <span class="mi">2</span>
+</pre></div>
+</div>
+</div>
+<section id="Shadow-objects">
+<h1>Shadow objects<a class="headerlink" href="#Shadow-objects" title="Link to this heading">¶</a></h1>
+<p>A lot of exploratory and downstream analyses and visualisations require read-only access to the data.</p>
+<p>While AnnData (and MuData) <a class="reference external" href="https://anndata.readthedocs.io/en/latest/generated/anndata.read_h5ad.html">provides</a> support to delay reading the count matrix <code class="docutils literal notranslate"><span class="pre">.X</span></code> into memory, it currently does not provide a lightweight read-only access to the file contents.</p>
+<p>This is addressed by the new classes implemented in <code class="docutils literal notranslate"><span class="pre">shadows</span></code> — <em>AnnDataShadow</em> and <em>MuDataShadow</em>. Briefly, they mimic AnnData and MuData interfaces while keeping a connection to the file open and loading respective arrays, matrices and tables only when they are requested.</p>
+<p>Shadow objects are currently only implemented for H5AD and H5MU files.</p>
+<p>Import classes for these shadow objects:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">shadows</span> <span class="kn">import</span> <span class="n">AnnDataShadow</span><span class="p">,</span> <span class="n">MuDataShadow</span>
+</pre></div>
+</div>
+</div>
+<p>First, let’s download a multimodal dataset in the H5MU format:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">mudatasets</span>
+
+<span class="c1"># Memory consumption before (in MiB)</span>
+<span class="n">mem_before</span> <span class="o">=</span> <span class="n">measure_memory</span><span class="p">()</span>
+
+<span class="n">mdata</span> <span class="o">=</span> <span class="n">mudatasets</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;pbmc5k_citeseq&quot;</span><span class="p">,</span> <span class="n">files</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;pbmc5k_citeseq_processed.h5mu&quot;</span><span class="p">],</span> <span class="n">data_dir</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">backed</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="c1"># This will return a MuData objects after downloading the file,</span>
+<span class="c1"># but we will discard the in-memory object</span>
+
+<span class="c1"># Memory consumption after (in MiB)</span>
+<span class="n">mem_after</span> <span class="o">=</span> <span class="n">measure_memory</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Loading MuData took about </span><span class="si">{</span><span class="p">(</span><span class="n">mem_after</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mem_before</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MiB of memory&quot;</span><span class="p">)</span>
+
+<span class="kn">import</span> <span class="nn">gc</span>
+<span class="k">del</span> <span class="n">mdata</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">();</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+■ File pbmc5k_citeseq_processed.h5mu from pbmc5k_citeseq has been found at data/pbmc5k_citeseq/pbmc5k_citeseq_processed.h5mu
+■ Checksum is validated (md5) for pbmc5k_citeseq_processed.h5mu
+■ Loading pbmc5k_citeseq_processed.h5mu...
+Loading MuData took about 394.68 MiB of memory
+</pre></div></div>
+</div>
+<section id="Access-and-memory-consumption">
+<h2>Access and memory consumption<a class="headerlink" href="#Access-and-memory-consumption" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mem_start</span> <span class="o">=</span> <span class="n">measure_memory</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Now we can initialise a new MuData-like (in reality, a MuDataShadow) object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">file</span> <span class="o">=</span> <span class="n">data</span> <span class="o">/</span> <span class="s2">&quot;pbmc5k_citeseq/pbmc5k_citeseq_processed.h5mu&quot;</span>
+
+<span class="c1"># Memory consumption before (in MiB)</span>
+<span class="n">mem_before</span> <span class="o">=</span> <span class="n">measure_memory</span><span class="p">()</span>
+
+<span class="n">mdata</span> <span class="o">=</span> <span class="n">MuDataShadow</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="c1">#       ^ This will traverse the file</span>
+<span class="c1">#         but will not load any matrices or data frames</span>
+
+<span class="c1"># Memory consumption after (in MiB)</span>
+<span class="n">mem_after</span> <span class="o">=</span> <span class="n">measure_memory</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;MuDataShadow took about </span><span class="si">{</span><span class="p">(</span><span class="n">mem_after</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mem_before</span><span class="p">)</span><span class="si">}</span><span class="s2"> MiB of memory&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuDataShadow took about 0.0 MiB of memory
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span> <span class="o">=</span> <span class="n">MuDataShadow</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span>
+<span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">raw</span><span class="o">.</span><span class="n">X</span><span class="p">[:,</span><span class="mi">10</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">raw</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+raw:    X, var, varm
+
+raw:    Xᐁ, var, varm
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofa, X_mofa_umap, X_umap, X_wnn_umap, prot, rna
+  varm: LFs, prot, rna
+  obsp: connectivities, distances, wnn_connectivities, wnn_distances
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    Xᐁ, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>Individual modalities are <code class="docutils literal notranslate"><span class="pre">AnnDataShadow</span></code> objects:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData Shadow object with n_obs × n_vars = 3891 × 17806
+  X
+  raw:  Xᐁ, var, varm
+  obs:  _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+  var:  _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+  obsm: X_pca, X_umap
+  varm: PCs
+  obsp: connectivities, distances
+  uns:  celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+</section>
+<section id="Caching">
+<h2>Caching<a class="headerlink" href="#Caching" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Memory consumption before reading some of the attributes</span>
+<span class="n">mem_before</span> <span class="o">=</span> <span class="n">measure_memory</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>We can use the values of the shadow object just as values in a regular MuData. They will be loaded from the object and cached:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rna_obs</span> <span class="o">=</span> <span class="n">mdata</span><span class="o">.</span><span class="n">mod</span><span class="p">[</span><span class="s2">&quot;rna&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">obs</span>
+<span class="n">rna_obs</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>leiden</th>
+      <th>celltype</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AAACCCAAGAGACAAG-1</th>
+      <td>2363</td>
+      <td>7375.0</td>
+      <td>467.0</td>
+      <td>6.332204</td>
+      <td>3</td>
+      <td>intermediate mono</td>
+    </tr>
+    <tr>
+      <th>AAACCCAAGGCCTAGA-1</th>
+      <td>1259</td>
+      <td>3772.0</td>
+      <td>343.0</td>
+      <td>9.093319</td>
+      <td>0</td>
+      <td>CD4+ naïve T</td>
+    </tr>
+    <tr>
+      <th>AAACCCAGTCGTGCCA-1</th>
+      <td>1578</td>
+      <td>4902.0</td>
+      <td>646.0</td>
+      <td>13.178295</td>
+      <td>2</td>
+      <td>CD4+ memory T</td>
+    </tr>
+    <tr>
+      <th>AAACCCATCGTGCATA-1</th>
+      <td>1908</td>
+      <td>6704.0</td>
+      <td>426.0</td>
+      <td>6.354415</td>
+      <td>2</td>
+      <td>CD4+ memory T</td>
+    </tr>
+    <tr>
+      <th>AAACGAAAGACAAGCC-1</th>
+      <td>1589</td>
+      <td>3900.0</td>
+      <td>363.0</td>
+      <td>9.307693</td>
+      <td>1</td>
+      <td>CD14 mono</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>TTTGGTTGTACGAGTG-1</th>
+      <td>1450</td>
+      <td>5666.0</td>
+      <td>367.0</td>
+      <td>6.477232</td>
+      <td>0</td>
+      <td>CD4+ naïve T</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGAGTTAACAG-1</th>
+      <td>3068</td>
+      <td>10213.0</td>
+      <td>896.0</td>
+      <td>8.773132</td>
+      <td>9</td>
+      <td>intermediate mono</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGCAGCACAAG-1</th>
+      <td>1649</td>
+      <td>4754.0</td>
+      <td>468.0</td>
+      <td>9.844342</td>
+      <td>4</td>
+      <td>CD8+ memory T</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGCAGTCTTCC-1</th>
+      <td>1901</td>
+      <td>6373.0</td>
+      <td>553.0</td>
+      <td>8.677233</td>
+      <td>2</td>
+      <td>CD4+ memory T</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGCATTGCCGG-1</th>
+      <td>3443</td>
+      <td>12220.0</td>
+      <td>1287.0</td>
+      <td>10.531915</td>
+      <td>3</td>
+      <td>intermediate mono</td>
+    </tr>
+  </tbody>
+</table>
+<p>3891 rows × 6 columns</p>
+</div></div>
+</div>
+<p>Individual matrices or data frames from <code class="docutils literal notranslate"><span class="pre">.obsm</span></code>, <code class="docutils literal notranslate"><span class="pre">.obsp</span></code>, <code class="docutils literal notranslate"><span class="pre">.layers</span></code>, etc. can be loaded allowing to only load e.g. a particular embedding of the data:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rna_pca</span> <span class="o">=</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;rna&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;X_pca&quot;</span><span class="p">]</span>
+<span class="n">rna_pca</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[ 20.551052  ,   0.36840764,  -1.6193684 , ...,   0.09656975,
+         -0.90912175,  -0.77955467],
+       [ -9.47144   ,  -5.5212517 ,  -5.107428  , ...,   0.64674896,
+         -0.892091  ,   1.7873902 ],
+       [ -9.913012  ,   2.766899  ,  -2.0684972 , ...,  -0.6454743 ,
+          1.615869  ,  -0.63476324],
+       ...,
+       [ -8.727723  ,   7.9196725 ,   1.3326805 , ...,   1.4592032 ,
+          0.91210324,   1.3184382 ],
+       [-10.792531  ,   3.2086673 ,  -2.0437238 , ...,   1.7311838 ,
+         -1.840564  ,   1.3253008 ],
+       [ 20.642431  ,   0.49294943,  -1.6694897 , ...,  -0.51208967,
+          0.60652566,  -0.75145006]], dtype=float32)
+</pre></div></div>
+</div>
+<p>Notice the symbol <code class="docutils literal notranslate"><span class="pre">ᐁ</span></code> near the respective table (<code class="docutils literal notranslate"><span class="pre">/mod/rna/obs</span></code>) and matrix (<code class="docutils literal notranslate"><span class="pre">/mod/rna/obsm/X_pca</span></code>) indicating that the value has already been loaded into memory:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofa, X_mofa_umap, X_umap, X_wnn_umap, prot, rna
+  varm: LFs, prot, rna
+  obsp: connectivities, distances, wnn_connectivities, wnn_distances
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    Xᐁ, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pcaᐁ, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>Let’s load count matrices for a noticeable effect on memory consumption:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">rna_x</span> <span class="o">=</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;rna&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">X</span>
+<span class="n">prot_x</span> <span class="o">=</span> <span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;prot&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">X</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Memory consumption after loading .obs, .obsm[&quot;X_pca&quot;] for RNA,</span>
+<span class="c1"># and count matrices for RNA and proteins</span>
+<span class="n">mem_after</span> <span class="o">=</span> <span class="n">measure_memory</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Reading these few objects took about </span><span class="si">{</span><span class="p">(</span><span class="n">mem_after</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mem_before</span><span class="p">)</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2"> MiB of memory&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reading these few objects took about 266.30 MiB of memory
+</pre></div></div>
+</div>
+<p>Cache can be cleared:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
+<span class="n">mdata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofa, X_mofa_umap, X_umap, X_wnn_umap, prot, rna
+  varm: LFs, prot, rna
+  obsp: connectivities, distances, wnn_connectivities, wnn_distances
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    X, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>(No more <code class="docutils literal notranslate"><span class="pre">obsᐁ</span></code> and <code class="docutils literal notranslate"><span class="pre">X_pcaᐁ</span></code>!)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">rna_obs</span><span class="p">,</span> <span class="n">rna_pca</span><span class="p">,</span> <span class="n">rna_x</span><span class="p">,</span> <span class="n">prot_x</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+16
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;After clearing cache, memory consumption change is </span><span class="si">{</span><span class="p">(</span><span class="n">measure_memory</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mem_after</span><span class="p">)</span><span class="si">}</span><span class="s2"> MiB&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+After clearing cache, memory consumption change is -264.33984375 MiB
+</pre></div></div>
+</div>
+</section>
+<section id="External-tools">
+<h2>External tools<a class="headerlink" href="#External-tools" title="Link to this heading">¶</a></h2>
+<p>As AnnDataShadow and MuDataShadow mimic AnnData and MuData interfaces, most of the read-only functionality of <a class="reference external" href="https://scverse.org/packages/">the whole ecosystem of scverse tools</a>, including <a class="reference external" href="https://scanpy.rtfd.io/">scanpy</a> and <a class="reference external" href="https://muon.scverse.org/">muon</a>, is supported out of the box:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sc</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">umap</span><span class="p">(</span><span class="n">mdata</span><span class="p">[</span><span class="s2">&quot;rna&quot;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;celltype&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_shadow-objects_45_0.png" src="../_images/examples_shadow-objects_45_0.png" />
+</div>
+</div>
+<p>Notice that the colours were fetched from the respective array in <code class="docutils literal notranslate"><span class="pre">.uns</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;celltype_colors&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([&#39;#8000ff&#39;, &#39;#5641fd&#39;, &#39;#2c7ef7&#39;, &#39;#00b5eb&#39;, &#39;#2adddd&#39;, &#39;#54f6cb&#39;,
+       &#39;#80ffb4&#39;, &#39;#abf69b&#39;, &#39;#d4dd80&#39;, &#39;#ffb360&#39;, &#39;#ff7e41&#39;, &#39;#ff4121&#39;,
+       &#39;#ff0000&#39;], dtype=object)
+</pre></div></div>
+</div>
+<p>Moreoever, they were only loaded from file when requested. We can see that an array with these value is cached now:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">uns</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+uns:    celltype_colorsᐁ, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>The same works for muon:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s1">&#39;celltype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype</span>
+<span class="n">mdata</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;celltype_colors&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdata</span><span class="p">[</span><span class="s1">&#39;rna&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s1">&#39;celltype_colors&#39;</span><span class="p">]</span>
+
+<span class="n">mu</span><span class="o">.</span><span class="n">pl</span><span class="o">.</span><span class="n">mofa</span><span class="p">(</span><span class="n">mdata</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;celltype&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_shadow-objects_51_0.png" src="../_images/examples_shadow-objects_51_0.png" />
+</div>
+</div>
+</section>
+<section id="Adding-data-to-the-in-memory-object">
+<h2>Adding data to the in-memory object<a class="headerlink" href="#Adding-data-to-the-in-memory-object" title="Link to this heading">¶</a></h2>
+<p>Shadow objects also allow to have new data added to them, for instance new embeddings:</p>
+<blockquote>
+<div><p>[!NOTE] Data added to in-memory shadow objects can be saved on disk as demonstrated <a class="reference internal" href="shadows-features.html"><span class="doc">in another tutorial</span></a>.</p>
+</div></blockquote>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># For simplicity, we will copy an embedding</span>
+<span class="n">mdata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;X_mofa_copy&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdata</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;X_mofa&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p>Notice a new symbol (<code class="docutils literal notranslate"><span class="pre">▲</span></code>) to signify an in-memory object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofaᐁ, X_mofa_umapᐁ, X_umapᐁ, X_wnn_umapᐁ, protᐁ, rnaᐁ, X_mofa_copy▲
+  varm: LFs, prot, rna
+  obsp: connectivitiesᐁ, distancesᐁ, wnn_connectivitiesᐁ, wnn_distancesᐁ
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn, celltype_colors▲
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    X, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pca, X_umapᐁ
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colorsᐁ, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<blockquote>
+<div><p>[!NOTE] Adding columns to data frames or altering objects otherwise is currently not being registered by shadow objects.</p>
+</div></blockquote>
+</section>
+<section id="Wind-down">
+<h2>Wind down<a class="headerlink" href="#Wind-down" title="Link to this heading">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mdata</span><span class="o">.</span><span class="n">clear_cache</span><span class="p">()</span>
+<span class="n">mdata</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">mdata</span></code> cannot be used after the connection is closed:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">try</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">mdata</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;MuData is not available:&quot;</span><span class="p">,</span> <span class="n">e</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData is not available: Invalid location identifier (invalid location identifier)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">mdata</span>
+<span class="n">gc</span><span class="o">.</span><span class="n">collect</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+9378
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;In the end, memory consumption is </span><span class="si">{</span><span class="p">(</span><span class="n">measure_memory</span><span class="p">()</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">mem_start</span><span class="p">)</span><span class="si">}</span><span class="s2"> MiB up&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+In the end, memory consumption is -1.2421875 MiB up
+</pre></div></div>
+</div>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="shadows-features.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Shadows features</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="index.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Examples</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2024, Danila Bredikhin
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Shadow objects</a><ul>
+<li><a class="reference internal" href="#Access-and-memory-consumption">Access and memory consumption</a></li>
+<li><a class="reference internal" href="#Caching">Caching</a></li>
+<li><a class="reference internal" href="#External-tools">External tools</a></li>
+<li><a class="reference internal" href="#Adding-data-to-the-in-memory-object">Adding data to the in-memory object</a></li>
+<li><a class="reference internal" href="#Wind-down">Wind down</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="../_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/furo.js?v=4e2eecee"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </body>
+</html>
