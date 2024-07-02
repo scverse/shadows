@@ -1,9 +1,9 @@
-from typing import Literal, Optional, Union
-from functools import cached_property
-from os import path
 import ctypes
+from functools import cached_property
+import logging
+from os import path
+from typing import Literal, Optional, Union
 from warnings import warn
-
 
 # FIXME: import only when needed
 import h5py
@@ -31,10 +31,19 @@ class DataShadow:
         array_backend: str = "numpy",
         table_backend: str = "pandas",
         mode: str = "r",
-        format: Literal["hdf5", "zarr"] = "hdf5",
+        format: Optional[Literal["hdf5", "zarr"]] = None,
         lazy: bool = False,
     ):
-        if format == "zarr":
+        if format is None:
+            logging.info("No format provided, trying to infer from the file extension")
+            if filepath.endswith(".zarr"):
+                format = "zarr"
+            else:
+                format = "hdf5"
+
+        if format == "hdf5":
+            import h5py
+        elif format == "zarr":
             import zarr
 
         if path.exists(filepath):
@@ -45,7 +54,7 @@ class DataShadow:
                 # fallback to hdf5 by default
                 if format != "hdf5":
                     warn(
-                        f"Falling back to hdf5, provided format is '{format}' and not 'hdf5 or 'zarr'"
+                        f"Falling back to hdf5, provided format is '{format}' and not 'hdf5' or 'zarr'"
                     )
                 self.file = h5py.File(filepath, mode=mode)
                 self.root = "/"
