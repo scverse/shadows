@@ -1,0 +1,1214 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shadow objects &#8212; shadows  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/shadow-objects';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Shadows features" href="shadows-features.html" />
+    <link rel="prev" title="Examples" href="index.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">shadows  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Shadow objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shadows-features.html">Shadows features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shadows-zarr.html">Shadows for zarr</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/examples/shadow-objects.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Shadow objects</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Access-and-memory-consumption">Access and memory consumption</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Caching">Caching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#External-tools">External tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Adding-data-to-the-in-memory-object">Adding data to the in-memory object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Wind-down">Wind down</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+os.chdir(&quot;../../&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pathlib import Path
+data = Path(&quot;data/&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># We will only use them for plotting below
+import scanpy as sc
+import muon as mu
+</pre></div>
+</div>
+</div>
+<p>Throughout the notebook we will also track how much memory the notebook consumes after loading different objects into memory.</p>
+<p>This won’t provide exact measurement but will allow to see the order of magnitude of memory consumption:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os, psutil
+def measure_memory() -&gt; float:
+    return psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2
+</pre></div>
+</div>
+</div>
+<section id="Shadow-objects">
+<h1>Shadow objects<a class="headerlink" href="#Shadow-objects" title="Link to this heading">#</a></h1>
+<p>A lot of exploratory and downstream analyses and visualisations require read-only access to the data.</p>
+<p>While AnnData (and MuData) <a class="reference external" href="https://anndata.readthedocs.io/en/latest/generated/anndata.read_h5ad.html">provides</a> support to delay reading the count matrix <code class="docutils literal notranslate"><span class="pre">.X</span></code> into memory, it currently does not provide a lightweight read-only access to the file contents.</p>
+<p>This is addressed by the new classes implemented in <code class="docutils literal notranslate"><span class="pre">shadows</span></code> — <em>AnnDataShadow</em> and <em>MuDataShadow</em>. Briefly, they mimic AnnData and MuData interfaces while keeping a connection to the file open and loading respective arrays, matrices and tables only when they are requested.</p>
+<p>Shadow objects are currently only implemented for H5AD and H5MU files.</p>
+<p>Import classes for these shadow objects:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from shadows import AnnDataShadow, MuDataShadow
+</pre></div>
+</div>
+</div>
+<p>First, let’s download a multimodal dataset in the H5MU format:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import mudatasets
+
+# Memory consumption before (in MiB)
+mem_before = measure_memory()
+
+mdata = mudatasets.load(&quot;pbmc5k_citeseq&quot;, files=[&quot;pbmc5k_citeseq_processed.h5mu&quot;], data_dir=data, backed=False)
+# This will return a MuData objects after downloading the file,
+# but we will discard the in-memory object
+
+# Memory consumption after (in MiB)
+mem_after = measure_memory()
+
+print(f&quot;Loading MuData took about {(mem_after - mem_before):.2f} MiB of memory&quot;)
+
+import gc
+del mdata
+gc.collect();
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+■ File pbmc5k_citeseq_processed.h5mu from pbmc5k_citeseq has been found at data/pbmc5k_citeseq/pbmc5k_citeseq_processed.h5mu
+■ Checksum is validated (md5) for pbmc5k_citeseq_processed.h5mu
+■ Loading pbmc5k_citeseq_processed.h5mu...
+Loading MuData took about 394.68 MiB of memory
+</pre></div></div>
+</div>
+<section id="Access-and-memory-consumption">
+<h2>Access and memory consumption<a class="headerlink" href="#Access-and-memory-consumption" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mem_start = measure_memory()
+</pre></div>
+</div>
+</div>
+<p>Now we can initialise a new MuData-like (in reality, a MuDataShadow) object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>file = data / &quot;pbmc5k_citeseq/pbmc5k_citeseq_processed.h5mu&quot;
+
+# Memory consumption before (in MiB)
+mem_before = measure_memory()
+
+mdata = MuDataShadow(file)
+#       ^ This will traverse the file
+#         but will not load any matrices or data frames
+
+# Memory consumption after (in MiB)
+mem_after = measure_memory()
+
+print(f&quot;MuDataShadow took about {(mem_after - mem_before)} MiB of memory&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuDataShadow took about 0.0 MiB of memory
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata = MuDataShadow(file)
+print(mdata[&#39;rna&#39;].raw)
+mdata[&#39;rna&#39;].raw.X[:,10]
+print(mdata[&#39;rna&#39;].raw)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+raw:    X, var, varm
+
+raw:    Xᐁ, var, varm
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofa, X_mofa_umap, X_umap, X_wnn_umap, prot, rna
+  varm: LFs, prot, rna
+  obsp: connectivities, distances, wnn_connectivities, wnn_distances
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    Xᐁ, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>Individual modalities are <code class="docutils literal notranslate"><span class="pre">AnnDataShadow</span></code> objects:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata[&#39;rna&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData Shadow object with n_obs × n_vars = 3891 × 17806
+  X
+  raw:  Xᐁ, var, varm
+  obs:  _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+  var:  _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+  obsm: X_pca, X_umap
+  varm: PCs
+  obsp: connectivities, distances
+  uns:  celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+</section>
+<section id="Caching">
+<h2>Caching<a class="headerlink" href="#Caching" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Memory consumption before reading some of the attributes
+mem_before = measure_memory()
+</pre></div>
+</div>
+</div>
+<p>We can use the values of the shadow object just as values in a regular MuData. They will be loaded from the object and cached:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rna_obs = mdata.mod[&quot;rna&quot;].obs
+rna_obs
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>leiden</th>
+      <th>celltype</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AAACCCAAGAGACAAG-1</th>
+      <td>2363</td>
+      <td>7375.0</td>
+      <td>467.0</td>
+      <td>6.332204</td>
+      <td>3</td>
+      <td>intermediate mono</td>
+    </tr>
+    <tr>
+      <th>AAACCCAAGGCCTAGA-1</th>
+      <td>1259</td>
+      <td>3772.0</td>
+      <td>343.0</td>
+      <td>9.093319</td>
+      <td>0</td>
+      <td>CD4+ naïve T</td>
+    </tr>
+    <tr>
+      <th>AAACCCAGTCGTGCCA-1</th>
+      <td>1578</td>
+      <td>4902.0</td>
+      <td>646.0</td>
+      <td>13.178295</td>
+      <td>2</td>
+      <td>CD4+ memory T</td>
+    </tr>
+    <tr>
+      <th>AAACCCATCGTGCATA-1</th>
+      <td>1908</td>
+      <td>6704.0</td>
+      <td>426.0</td>
+      <td>6.354415</td>
+      <td>2</td>
+      <td>CD4+ memory T</td>
+    </tr>
+    <tr>
+      <th>AAACGAAAGACAAGCC-1</th>
+      <td>1589</td>
+      <td>3900.0</td>
+      <td>363.0</td>
+      <td>9.307693</td>
+      <td>1</td>
+      <td>CD14 mono</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>TTTGGTTGTACGAGTG-1</th>
+      <td>1450</td>
+      <td>5666.0</td>
+      <td>367.0</td>
+      <td>6.477232</td>
+      <td>0</td>
+      <td>CD4+ naïve T</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGAGTTAACAG-1</th>
+      <td>3068</td>
+      <td>10213.0</td>
+      <td>896.0</td>
+      <td>8.773132</td>
+      <td>9</td>
+      <td>intermediate mono</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGCAGCACAAG-1</th>
+      <td>1649</td>
+      <td>4754.0</td>
+      <td>468.0</td>
+      <td>9.844342</td>
+      <td>4</td>
+      <td>CD8+ memory T</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGCAGTCTTCC-1</th>
+      <td>1901</td>
+      <td>6373.0</td>
+      <td>553.0</td>
+      <td>8.677233</td>
+      <td>2</td>
+      <td>CD4+ memory T</td>
+    </tr>
+    <tr>
+      <th>TTTGTTGCATTGCCGG-1</th>
+      <td>3443</td>
+      <td>12220.0</td>
+      <td>1287.0</td>
+      <td>10.531915</td>
+      <td>3</td>
+      <td>intermediate mono</td>
+    </tr>
+  </tbody>
+</table>
+<p>3891 rows × 6 columns</p>
+</div></div>
+</div>
+<p>Individual matrices or data frames from <code class="docutils literal notranslate"><span class="pre">.obsm</span></code>, <code class="docutils literal notranslate"><span class="pre">.obsp</span></code>, <code class="docutils literal notranslate"><span class="pre">.layers</span></code>, etc. can be loaded allowing to only load e.g. a particular embedding of the data:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rna_pca = mdata[&quot;rna&quot;].obsm[&quot;X_pca&quot;]
+rna_pca
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[ 20.551052  ,   0.36840764,  -1.6193684 , ...,   0.09656975,
+         -0.90912175,  -0.77955467],
+       [ -9.47144   ,  -5.5212517 ,  -5.107428  , ...,   0.64674896,
+         -0.892091  ,   1.7873902 ],
+       [ -9.913012  ,   2.766899  ,  -2.0684972 , ...,  -0.6454743 ,
+          1.615869  ,  -0.63476324],
+       ...,
+       [ -8.727723  ,   7.9196725 ,   1.3326805 , ...,   1.4592032 ,
+          0.91210324,   1.3184382 ],
+       [-10.792531  ,   3.2086673 ,  -2.0437238 , ...,   1.7311838 ,
+         -1.840564  ,   1.3253008 ],
+       [ 20.642431  ,   0.49294943,  -1.6694897 , ...,  -0.51208967,
+          0.60652566,  -0.75145006]], dtype=float32)
+</pre></div></div>
+</div>
+<p>Notice the symbol <code class="docutils literal notranslate"><span class="pre">ᐁ</span></code> near the respective table (<code class="docutils literal notranslate"><span class="pre">/mod/rna/obs</span></code>) and matrix (<code class="docutils literal notranslate"><span class="pre">/mod/rna/obsm/X_pca</span></code>) indicating that the value has already been loaded into memory:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofa, X_mofa_umap, X_umap, X_wnn_umap, prot, rna
+  varm: LFs, prot, rna
+  obsp: connectivities, distances, wnn_connectivities, wnn_distances
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    Xᐁ, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pcaᐁ, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>Let’s load count matrices for a noticeable effect on memory consumption:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rna_x = mdata[&quot;rna&quot;].X
+prot_x = mdata[&quot;prot&quot;].X
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Memory consumption after loading .obs, .obsm[&quot;X_pca&quot;] for RNA,
+# and count matrices for RNA and proteins
+mem_after = measure_memory()
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(f&quot;Reading these few objects took about {(mem_after - mem_before):.2f} MiB of memory&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Reading these few objects took about 266.30 MiB of memory
+</pre></div></div>
+</div>
+<p>Cache can be cleared:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.clear_cache()
+mdata
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofa, X_mofa_umap, X_umap, X_wnn_umap, prot, rna
+  varm: LFs, prot, rna
+  obsp: connectivities, distances, wnn_connectivities, wnn_distances
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    X, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>(No more <code class="docutils literal notranslate"><span class="pre">obsᐁ</span></code> and <code class="docutils literal notranslate"><span class="pre">X_pcaᐁ</span></code>!)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del rna_obs, rna_pca, rna_x, prot_x
+gc.collect()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+16
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(f&quot;After clearing cache, memory consumption change is {(measure_memory() - mem_after)} MiB&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+After clearing cache, memory consumption change is -264.33984375 MiB
+</pre></div></div>
+</div>
+</section>
+<section id="External-tools">
+<h2>External tools<a class="headerlink" href="#External-tools" title="Link to this heading">#</a></h2>
+<p>As AnnDataShadow and MuDataShadow mimic AnnData and MuData interfaces, most of the read-only functionality of <a class="reference external" href="https://scverse.org/packages/">the whole ecosystem of scverse tools</a>, including <a class="reference external" href="https://scanpy.rtfd.io/">scanpy</a> and <a class="reference external" href="https://muon.scverse.org/">muon</a>, is supported out of the box:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>sc.pl.umap(mdata[&quot;rna&quot;], color=&quot;celltype&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_shadow-objects_45_0.png" src="../_images/examples_shadow-objects_45_0.png" />
+</div>
+</div>
+<p>Notice that the colours were fetched from the respective array in <code class="docutils literal notranslate"><span class="pre">.uns</span></code>:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata[&#39;rna&#39;].uns[&#39;celltype_colors&#39;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([&#39;#8000ff&#39;, &#39;#5641fd&#39;, &#39;#2c7ef7&#39;, &#39;#00b5eb&#39;, &#39;#2adddd&#39;, &#39;#54f6cb&#39;,
+       &#39;#80ffb4&#39;, &#39;#abf69b&#39;, &#39;#d4dd80&#39;, &#39;#ffb360&#39;, &#39;#ff7e41&#39;, &#39;#ff4121&#39;,
+       &#39;#ff0000&#39;], dtype=object)
+</pre></div></div>
+</div>
+<p>Moreoever, they were only loaded from file when requested. We can see that an array with these value is cached now:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata[&#39;rna&#39;].uns
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+uns:    celltype_colorsᐁ, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>The same works for muon:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.obs[&#39;celltype&#39;] = mdata[&#39;rna&#39;].obs.celltype
+mdata.uns[&#39;celltype_colors&#39;] = mdata[&#39;rna&#39;].uns[&#39;celltype_colors&#39;]
+
+mu.pl.mofa(mdata, color=&quot;celltype&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/examples_shadow-objects_51_0.png" src="../_images/examples_shadow-objects_51_0.png" />
+</div>
+</div>
+</section>
+<section id="Adding-data-to-the-in-memory-object">
+<h2>Adding data to the in-memory object<a class="headerlink" href="#Adding-data-to-the-in-memory-object" title="Link to this heading">#</a></h2>
+<p>Shadow objects also allow to have new data added to them, for instance new embeddings:</p>
+<blockquote>
+<div><p>[!NOTE] Data added to in-memory shadow objects can be saved on disk as demonstrated <a class="reference internal" href="shadows-features.html"><span class="doc">in another tutorial</span></a>.</p>
+</div></blockquote>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># For simplicity, we will copy an embedding
+mdata.obsm[&quot;X_mofa_copy&quot;] = mdata.obsm[&quot;X_mofa&quot;].copy()
+</pre></div>
+</div>
+</div>
+<p>Notice a new symbol (<code class="docutils literal notranslate"><span class="pre">▲</span></code>) to signify an in-memory object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData Shadow object with n_obs × n_vars = 3891 × 17838
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofaᐁ, X_mofa_umapᐁ, X_umapᐁ, X_wnn_umapᐁ, protᐁ, rnaᐁ, X_mofa_copy▲
+  varm: LFs, prot, rna
+  obsp: connectivitiesᐁ, distancesᐁ, wnn_connectivitiesᐁ, wnn_distancesᐁ
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn, celltype_colors▲
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 3891 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 3891 x 17806
+        X
+        raw:    X, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pca, X_umapᐁ
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colorsᐁ, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<blockquote>
+<div><p>[!NOTE] Adding columns to data frames or altering objects otherwise is currently not being registered by shadow objects.</p>
+</div></blockquote>
+</section>
+<section id="Wind-down">
+<h2>Wind down<a class="headerlink" href="#Wind-down" title="Link to this heading">#</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.clear_cache()
+mdata.close()
+</pre></div>
+</div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">mdata</span></code> cannot be used after the connection is closed:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
+    print(mdata)
+except ValueError as e:
+    print(&quot;MuData is not available:&quot;, e)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+MuData is not available: Invalid location identifier (invalid location identifier)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>del mdata
+gc.collect()
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+9378
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>print(f&quot;In the end, memory consumption is {(measure_memory() - mem_start)} MiB up&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+In the end, memory consumption is -1.2421875 MiB up
+</pre></div></div>
+</div>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="index.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Examples</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="shadows-features.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Shadows features</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Access-and-memory-consumption">Access and memory consumption</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Caching">Caching</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#External-tools">External tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Adding-data-to-the-in-memory-object">Adding data to the in-memory object</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Wind-down">Wind down</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Danila Bredikhin
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Danila Bredikhin.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,1501 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shadows features &#8212; shadows  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=a3416100" />
+    <link rel="stylesheet" type="text/css" href="../_static/nbsphinx-code-cells.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'examples/shadows-features';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Shadows for zarr" href="shadows-zarr.html" />
+    <link rel="prev" title="Shadow objects" href="shadow-objects.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">shadows  documentation</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="index.html">Examples</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="shadow-objects.html">Shadow objects</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Shadows features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shadows-zarr.html">Shadows for zarr</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1"><a class="reference internal" href="../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/examples/shadows-features.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Shadows features</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Shadow-objects-and-their-features">Shadow objects and their features</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#File">File</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Permissions">Permissions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Individual-modality-access">Individual modality access</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Class-identity">Class identity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Backends">Backends</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Partial-writing">Partial writing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Views">Views</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Per-feature-access-to-datasets-on-disk">Per-feature access to datasets on disk</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="Shadows-features">
+<h1>Shadows features<a class="headerlink" href="#Shadows-features" title="Link to this heading">#</a></h1>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>%load_ext autoreload
+%autoreload 2
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import os
+os.chdir(&quot;../../&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from pathlib import Path
+data = Path(&quot;data/&quot;)
+</pre></div>
+</div>
+</div>
+<section id="Shadow-objects-and-their-features">
+<h2>Shadow objects and their features<a class="headerlink" href="#Shadow-objects-and-their-features" title="Link to this heading">#</a></h2>
+<p>While shadow objects provide a convenient read-only drop-in replacement for AnnData/MuData objects when needed, they also have additional features that can help users make the most of <em>shadows</em>.</p>
+<p>Import classes for these shadow objects:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from shadows import AnnDataShadow, MuDataShadow
+</pre></div>
+</div>
+</div>
+<p>Initialise a multimodal shadow object:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>file = data / &quot;pbmc5k_citeseq/pbmc5k_citeseq_processed.h5mu&quot;
+mdata = MuDataShadow(file)
+</pre></div>
+</div>
+</div>
+<section id="File">
+<h3>File<a class="headerlink" href="#File" title="Link to this heading">#</a></h3>
+<p>The file connection that the shadow is using can be accessed via the <code class="docutils literal notranslate"><span class="pre">.file</span></code> attribute:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.file
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;HDF5 file &#34;pbmc5k_citeseq_processed.h5mu&#34; (mode r)&gt;
+</pre></div></div>
+</div>
+<p>The name of the file can then be accessed via</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.file.filename
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;data/pbmc5k_citeseq/pbmc5k_citeseq_processed.h5mu&#39;
+</pre></div></div>
+</div>
+<p>The connection stays open until <code class="docutils literal notranslate"><span class="pre">mdata.close()</span></code> is called</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.close()
+</pre></div>
+</div>
+</div>
+<p>… or until the file has to be re-opened for modification (see below).</p>
+</section>
+<section id="Permissions">
+<h3>Permissions<a class="headerlink" href="#Permissions" title="Link to this heading">#</a></h3>
+<p>We can open HDF5 files in different modes including purely read-only (<code class="docutils literal notranslate"><span class="pre">'r'</span></code>) and read/write (<code class="docutils literal notranslate"><span class="pre">'r+'</span></code>). The mode can be provided to the constructor:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata = MuDataShadow(file, mode=&quot;r&quot;)
+mdata.file.mode
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;r&#39;
+</pre></div></div>
+</div>
+<p>Let’s add some data to the in-memory shadow object:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata[&quot;rna&quot;].obsm[&quot;X_pca_copy&quot;] = mdata[&quot;rna&quot;].obsm[&quot;X_pca&quot;].copy()
+</pre></div>
+</div>
+</div>
+<p>We can also conveniently close and reopen the connection for a given in-memory shadow object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.reopen(mode=&quot;r+&quot;)
+mdata.file.mode
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;r+&#39;
+</pre></div></div>
+</div>
+<p>This way all the newly added elements are still available in memory:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata[&quot;rna&quot;].obsm
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+obsm:   X_pcaᐁ, X_umap, X_pca_copy▲
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Clean up
+mdata.close()
+del mdata
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Individual-modality-access">
+<h3>Individual modality access<a class="headerlink" href="#Individual-modality-access" title="Link to this heading">#</a></h3>
+<p>Individual modalities stored in the .h5mu files can be accessed as part of the <code class="docutils literal notranslate"><span class="pre">MuDataShadow</span></code> object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata = MuDataShadow(file, mode=&quot;r&quot;)
+mdata[&quot;rna&quot;]
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData Shadow object with n_obs × n_vars = 3891 × 17806
+  X
+  raw:  X, var, varm
+  obs:  _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+  var:  _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+  obsm: X_pca, X_umap
+  varm: PCs
+  obsp: connectivities, distances
+  uns:  celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>Moreover, one can also create a direct connection to a specific modality:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.close()
+del mdata
+
+adata = AnnDataShadow(file / &quot;mod/rna&quot;)
+adata
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+AnnData Shadow object with n_obs × n_vars = 3891 × 17806
+  X
+  raw:  X, var, varm
+  obs:  _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+  var:  _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+  obsm: X_pca, X_umap
+  varm: PCs
+  obsp: connectivities, distances
+  uns:  celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Clean up
+adata.close()
+del adata
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Class-identity">
+<h3>Class identity<a class="headerlink" href="#Class-identity" title="Link to this heading">#</a></h3>
+<p>Many tools in the ecosystem including scanpy frequently check if the input object is an AnnData. For instance, <cite>in ``sc.pp.highly_variable_genes`</cite> &lt;<a class="github reference external" href="https://github.com/scverse/scanpy/blob/master/scanpy/preprocessing/_highly_variable_genes.py">scverse/scanpy</a>&gt;`__ it reads:</p>
+<div class="highlight-py notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adata</span><span class="p">,</span> <span class="n">AnnData</span><span class="p">):</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+        <span class="s1">&#39;`pp.highly_variable_genes` expects an `AnnData` argument, &#39;</span>
+        <span class="s1">&#39;pass `inplace=False` if you want to return a `pd.DataFrame`.&#39;</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>In order for shadow objects to be accepted by such functions, they mock their class identity:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata = MuDataShadow(file, mode=&quot;r&quot;)
+
+from mudata import MuData
+assert isinstance(mdata, MuData), &quot;mdata is not a valid MuData object&quot;
+</pre></div>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>from anndata import AnnData
+assert isinstance(mdata[&quot;rna&quot;], AnnData), &quot;mdata[&#39;rna&#39;] is not a valid AnnData object&quot;
+</pre></div>
+</div>
+</div>
+<p>Checking for shadow identity still works:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>isinstance(mdata, MuDataShadow)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>isinstance(mdata[&quot;rna&quot;], AnnDataShadow)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+True
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.close()
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Backends">
+<h3>Backends<a class="headerlink" href="#Backends" title="Link to this heading">#</a></h3>
+<p>AnnData/MuData are based on a NumPy/Pandas stack. This is the default for the shadow objects in order to provide compatibility with AnnData/MuData objects.</p>
+<p>However the nature of shadow files also simplifies loading individual matrices or tables with alternative backends, e.g. <a class="reference external" href="https://jax.readthedocs.io/en/latest/_autosummary/jax.numpy.array.html#jax.numpy.array">JAX</a> (<code class="docutils literal notranslate"><span class="pre">Array</span></code>), <a class="reference external" href="https://pytorch.org/docs/stable/tensors.html">PyTorch</a> (<code class="docutils literal notranslate"><span class="pre">Tensor</span></code>) or <a class="reference external" href="https://pola-rs.github.io/polars/py-polars/html/reference/dataframe/index.html">polars</a> (<code class="docutils literal notranslate"><span class="pre">DataFrame</span></code>).</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata = MuDataShadow(file, array_backend=&quot;jax&quot;, table_backend=&quot;polars&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>obs = mdata[&quot;rna&quot;].obs
+print(type(obs))
+obs.head()
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;class &#39;polars.internals.dataframe.frame.DataFrame&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+
+    .dataframe td {
+        white-space: pre;
+    }
+
+    .dataframe td {
+        padding-top: 0;
+    }
+
+    .dataframe td {
+        padding-bottom: 0;
+    }
+
+    .dataframe td {
+        line-height: 95%;
+    }
+</style>
+<table border="1" class="dataframe">
+<small>shape: (5, 7)</small>
+<thead>
+<tr>
+<th>
+_index
+</th>
+<th>
+celltype
+</th>
+<th>
+leiden
+</th>
+<th>
+n_genes_by_counts
+</th>
+<th>
+pct_counts_mt
+</th>
+<th>
+total_counts
+</th>
+<th>
+total_counts_mt
+</th>
+</tr>
+<tr>
+<td>
+object
+</td>
+<td>
+cat
+</td>
+<td>
+cat
+</td>
+<td>
+i32
+</td>
+<td>
+f32
+</td>
+<td>
+f32
+</td>
+<td>
+f32
+</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+AAACCCAAGAGACAAG-1
+</td>
+<td>
+&quot;intermediate m...
+</td>
+<td>
+&quot;3&quot;
+</td>
+<td>
+2363
+</td>
+<td>
+6.332204
+</td>
+<td>
+7375.0
+</td>
+<td>
+467.0
+</td>
+</tr>
+<tr>
+<td>
+AAACCCAAGGCCTAGA-1
+</td>
+<td>
+&quot;CD4+ naïve T&quot;
+</td>
+<td>
+&quot;0&quot;
+</td>
+<td>
+1259
+</td>
+<td>
+9.093319
+</td>
+<td>
+3772.0
+</td>
+<td>
+343.0
+</td>
+</tr>
+<tr>
+<td>
+AAACCCAGTCGTGCCA-1
+</td>
+<td>
+&quot;CD4+ memory T&quot;
+</td>
+<td>
+&quot;2&quot;
+</td>
+<td>
+1578
+</td>
+<td>
+13.178295
+</td>
+<td>
+4902.0
+</td>
+<td>
+646.0
+</td>
+</tr>
+<tr>
+<td>
+AAACCCATCGTGCATA-1
+</td>
+<td>
+&quot;CD4+ memory T&quot;
+</td>
+<td>
+&quot;2&quot;
+</td>
+<td>
+1908
+</td>
+<td>
+6.354415
+</td>
+<td>
+6704.0
+</td>
+<td>
+426.0
+</td>
+</tr>
+<tr>
+<td>
+AAACGAAAGACAAGCC-1
+</td>
+<td>
+&quot;CD14 mono&quot;
+</td>
+<td>
+&quot;1&quot;
+</td>
+<td>
+1589
+</td>
+<td>
+9.307693
+</td>
+<td>
+3900.0
+</td>
+<td>
+363.0
+</td>
+</tr>
+</tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>rna_pca = mdata[&quot;rna&quot;].obsm[&quot;X_pca&quot;]
+print(type(rna_pca))
+rna_pca
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;class &#39;jaxlib.xla_extension.DeviceArray&#39;&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+DeviceArray([[ 20.551052  ,   0.36840764,  -1.6193684 , ...,
+                0.09656975,  -0.90912175,  -0.77955467],
+             [ -9.47144   ,  -5.5212517 ,  -5.107428  , ...,
+                0.64674896,  -0.892091  ,   1.7873902 ],
+             [ -9.913012  ,   2.766899  ,  -2.0684972 , ...,
+               -0.6454743 ,   1.615869  ,  -0.63476324],
+             ...,
+             [ -8.727723  ,   7.9196725 ,   1.3326805 , ...,
+                1.4592032 ,   0.91210324,   1.3184382 ],
+             [-10.792531  ,   3.2086673 ,  -2.0437238 , ...,
+                1.7311838 ,  -1.840564  ,   1.3253008 ],
+             [ 20.642431  ,   0.49294943,  -1.6694897 , ...,
+               -0.51208967,   0.60652566,  -0.75145006]], dtype=float32)
+</pre></div></div>
+</div>
+<p>When alternative backends are being used, not all of the AnnData/MuData features can be supported, and many external tools might not work as expected as they anticipate NumPy/Pandas objects instead.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Clean up
+mdata.clear_cache()
+mdata.close()
+del mdata, rna_pca, obs
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Partial-writing">
+<h3>Partial writing<a class="headerlink" href="#Partial-writing" title="Link to this heading">#</a></h3>
+<blockquote>
+<div><p>[!NOTE] This feature is experimental.</p>
+</div></blockquote>
+<p>While the main use of the shadows is to provide a low-memory read-only solution to scverse datasets, ability to add new embeddings or other items to the file can greatly extend its usage patterns.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata = MuDataShadow(file, mode=&quot;r&quot;)
+</pre></div>
+</div>
+</div>
+<p>Add a new embedding to the in-memory object:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata[&quot;rna&quot;].obsm[&quot;X_pca_copy&quot;] = mdata[&quot;rna&quot;].obsm[&quot;X_pca&quot;].copy()
+mdata[&quot;rna&quot;].obsm
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+obsm:   X_pcaᐁ, X_pca_copyᐁ, X_umap
+</pre></div></div>
+</div>
+<p>For this, a family of methods is useful, including <code class="docutils literal notranslate"><span class="pre">.reopen()</span></code> and <code class="docutils literal notranslate"><span class="pre">.write()</span></code>. The <code class="docutils literal notranslate"><span class="pre">.write()</span></code> method will only work if the connection is not read-only, e.g. <code class="docutils literal notranslate"><span class="pre">'r+'</span></code>, however it is possible to reopen the file in another mode.</p>
+<p>Internally, <code class="docutils literal notranslate"><span class="pre">.write()</span></code> pushes (<code class="docutils literal notranslate"><span class="pre">._push_changes()</span></code>) the in-memory changes (marked with ▲ in the object representation above) to the file and provides meaningful error messages when the file is not open for writing.</p>
+<p>This separation of concern makes it transparent when the data is modified, and this workflow can be recommended when barely any data are added to the file. As the methods return the shadow itself, it is possible to chain them:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.reopen(mode=&#39;r+&#39;).write(clear_cache=True).reopen(mode=&#39;r&#39;);  # clear pushed elements from cache
+mdata[&quot;rna&quot;].obsm
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+obsm:   X_pcaᐁ, X_pca_copyᐁ, X_umap
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.file.mode
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&#39;r&#39;
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata.clear_cache()
+</pre></div>
+</div>
+</div>
+<p>Default mode is read-only, and it protects the files from being modified while also allowing for multiple connections to the file:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>try:
+    mdata.write()
+except OSError as e:
+    print(&quot;Not available for .write():&quot;, e)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Not available for .write(): File is open in read-only mode. Changes can&#39;t be pushed. Reopen it with .reopen(&#39;r+&#39;) to enable writing.
+</pre></div></div>
+</div>
+<blockquote>
+<div><p>[!NOTE] Partial writing is currently intended to add new elements to the dataset on disk (e.g. a new embedding to .obsm) rather than to modify the dataset and delete or alter existing elements.</p>
+</div></blockquote>
+</section>
+<section id="Views">
+<h3>Views<a class="headerlink" href="#Views" title="Link to this heading">#</a></h3>
+<p>Views for shadow objects are conceptually similar to <a class="reference external" href="https://anndata.readthedocs.io/en/latest/generated/anndata.AnnData.is_view.html">views in AnnData/MuData</a>: they provide a view into an existing object without creating its copy.</p>
+<p>As shadow objects inherently operate on the file they are connected to, their views behave slightly differently. Creating a view creates a new connection to the file and returns a new shadow object, which is aware of the part of the data (e.g. which cells) it is supposed to provide a view for.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>monocytes = mdata[&#39;rna&#39;].obs[&#39;celltype&#39;].values == &quot;CD14 mono&quot;
+monocytes_view = mdata[monocytes]
+monocytes_view
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+View of MuData Shadow object with n_obs × n_vars = 612 × 17838 (original 3891 × 17838)
+  obs:  _index, leiden, leiden_wnn, louvain
+  var:  _index, feature_types, gene_ids, highly_variable
+  obsm: X_mofa, X_mofa_umap, X_umap, X_wnn_umap, prot, rna
+  varm: LFs, prot, rna
+  obsp: connectivities, distances, wnn_connectivities, wnn_distances
+  uns:  leiden, leiden_wnn_colors, louvain, neighbors, rna:celltype_colors, umap, wnn
+  obsmap:       prot, rna
+  varmap:       prot, rna
+  mod:  2 modalities
+    prot: 612 x 32
+        X
+        layers: counts
+        obs:    _index
+        var:    _index, feature_types, gene_ids, highly_variable
+        obsm:   X_pca, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    neighbors, pca, umap
+    rna: 612 x 17806
+        X
+        raw:    X, var, varm
+        obs:    _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+        var:    _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+        obsm:   X_pca, X_pca_copy, X_umap
+        varm:   PCs
+        obsp:   connectivities, distances
+        uns:    celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>Individual modalities of a MuData Shadow View are sliced accordingly:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>monocytes_view[&#39;rna&#39;].obsm[&quot;X_pca&quot;].shape
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(612, 50)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>monocytes_view[&#39;rna&#39;].obsm
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+obsm:   X_pcaᐁ, X_pca_copy, X_umap
+</pre></div></div>
+</div>
+<p>Cache is specific to each view:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>mdata[&#39;rna&#39;].obsm  # X_pca is not cached
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+obsm:   X_pca, X_pca_copy, X_umap
+</pre></div></div>
+</div>
+<p>Moreover, this semantic allows to create views of views of views…</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata = AnnDataShadow(file / &quot;mod/rna&quot;)
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>view = adata[3:10,:30]
+view
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+View of AnnData Shadow object with n_obs × n_vars = 7 × 30 (original 3891 × 17806)
+  X
+  raw:  X, var, varm
+  obs:  _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+  var:  _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+  obsm: X_pca, X_pca_copy, X_umap
+  varm: PCs
+  obsp: connectivities, distances
+  uns:  celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nested_view = view[:2,-3:]
+nested_view
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+View of AnnData Shadow object with n_obs × n_vars = 2 × 3 (original 3891 × 17806)
+  X
+  raw:  X, var, varm
+  obs:  _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+  var:  _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+  obsm: X_pca, X_pca_copy, X_umap
+  varm: PCs
+  obsp: connectivities, distances
+  uns:  celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<p>Getting attributes from views is no different than for shadow objects:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>nested_view.obs
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>n_genes_by_counts</th>
+      <th>total_counts</th>
+      <th>total_counts_mt</th>
+      <th>pct_counts_mt</th>
+      <th>leiden</th>
+      <th>celltype</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>AAACCCATCGTGCATA-1</th>
+      <td>1908</td>
+      <td>6704.0</td>
+      <td>426.0</td>
+      <td>6.354415</td>
+      <td>2</td>
+      <td>CD4+ memory T</td>
+    </tr>
+    <tr>
+      <th>AAACGAAAGACAAGCC-1</th>
+      <td>1589</td>
+      <td>3900.0</td>
+      <td>363.0</td>
+      <td>9.307693</td>
+      <td>1</td>
+      <td>CD14 mono</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>… as they are shadow objects themselves:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>type(nested_view)
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+shadows.anndatashadow.AnnDataShadow
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Clean up
+nested_view.close()
+view.close()
+del nested_view, view
+
+monocytes_view.close()
+mdata.close()
+del monocytes_view, mdata
+</pre></div>
+</div>
+</div>
+</section>
+<section id="Per-feature-access-to-datasets-on-disk">
+<h3>Per-feature access to datasets on disk<a class="headerlink" href="#Per-feature-access-to-datasets-on-disk" title="Link to this heading">#</a></h3>
+<p>This is currently not possible as caching works at the level of individual HDF5 datasets.</p>
+<p>Views may read only the necessary parts of the arrays to memory however this behaviour is currently not universal.</p>
+<p>E.g.:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata_subset = adata[:10,:100]
+adata_subset.X.shape
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+(10, 100)
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>adata_subset
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+View of AnnData Shadow object with n_obs × n_vars = 10 × 100 (original 3891 × 17806)
+  X ᐁ
+  raw:  X, var, varm
+  obs:  _index, celltype, leiden, n_genes_by_counts, pct_counts_mt, total_counts, total_counts_mt
+  var:  _index, dispersions, dispersions_norm, feature_types, gene_ids, highly_variable, mean, mean_counts, means, mt, n_cells_by_counts, pct_dropout_by_counts, std, total_counts
+  obsm: X_pca, X_pca_copy, X_umap
+  varm: PCs
+  obsp: connectivities, distances
+  uns:  celltype_colors, hvg, leiden, leiden_colors, neighbors, pca, rank_genes_groups, umap
+</pre></div></div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span># Clean up
+adata.close()
+adata_subset.close()
+del adata, adata_subset
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<p>In order to return the data to its original state, let’s manually remove the items we wrote to the file:</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>import h5py
+
+f = h5py.File(file, &quot;a&quot;)
+#                    ^
+#        ____________|
+# if this works,
+# no dangling read-only connections!
+#
+
+del f[&quot;mod/rna/obsm/X_pca_copy&quot;]
+f.close()
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="shadow-objects.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Shadow objects</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="shadows-zarr.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Shadows for zarr</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#Shadow-objects-and-their-features">Shadow objects and their features</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#File">File</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Permissions">Permissions</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Individual-modality-access">Individual modality access</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Class-identity">Class identity</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Backends">Backends</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Partial-writing">Partial writing</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Views">Views</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#Per-feature-access-to-datasets-on-disk">Per-feature access to datasets on disk</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Danila Bredikhin
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2024, Danila Bredikhin.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
