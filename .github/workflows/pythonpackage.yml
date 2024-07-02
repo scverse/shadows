@@ -27,7 +27,7 @@ jobs:
     - name: Ruff check
       run: |
         source .venv/bin/activate
-	ruff check shadows
+        ruff check shadows
     - name: Test with pytest
       run: |
         source .venv/bin/activate
