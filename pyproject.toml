@@ -40,6 +40,7 @@ doc = [
     "sphinx-autodoc-typehints",
     "furo",
     "ipython",  # fix nbsphinx syntax highlighting
+    "pygments",
 ]
 test = [
     "scipy",
