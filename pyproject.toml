@@ -39,6 +39,7 @@ doc = [
     "sphinxcontrib-bibtex",
     "sphinx-autodoc-typehints",
     "furo",
+    "ipython",  # fix nbsphinx syntax highlighting
 ]
 test = [
     "scipy",
