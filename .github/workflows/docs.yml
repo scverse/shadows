@@ -5,12 +5,11 @@ jobs:
   docs:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.11"
-    - run: pip install flit
-    - run: flit install --deps develop
+    - run: pip install .[develop]
     - run: sudo apt-get install -y pandoc
     - name: Running the Sphinx to gh-pages Action
       uses: uibcdf/action-sphinx-docs-to-gh-pages@v1.0.0
