@@ -40,7 +40,7 @@ class DataShadow:
                 format = "zarr"
             else:
                 format = "hdf5"
-
+        
         if format == "hdf5":
             import h5py
         elif format == "zarr":
@@ -296,7 +296,7 @@ class DataShadow:
                 names = Index(self.file[self.root][axis][index][:])
 
         # only string index
-        if all(names.map(type) == bytes):
+        if all((isinstance(e, bytes) for e in names)):
             try:
                 names = names.str.decode("utf-8")
             except AttributeError:
