@@ -38,6 +38,7 @@ doc = [
     "sphinx-automodapi",
     "sphinxcontrib-bibtex",
     "sphinx-autodoc-typehints",
+    "furo",
 ]
 test = [
     "scipy",
