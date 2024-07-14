@@ -1,33 +1,39 @@
 [build-system]
-build-backend = "flit_core.buildapi"
-requires = [
-    "flit_core >=3.4,<4",
-    "importlib_metadata>=0.7; python_version > '3.9'",
-]
-
+build-backend = "hatchling.build"
+requires = ["hatchling", "hatch-vcs"]
 
 [project]
 name = "shadows"
 description = "Low-memory data interfaces for scverse"
+requires-python = ">= 3.10"
+license = { file = "LICENSE" }
 authors = [
-    {name = "Danila Bredikhin"},
+    { name = "Danila Bredikhin" },
 ]
 maintainers = [
-    {name = "Danila Bredikhin", email = "danila.bredikhin@scverse.org"},
+    { name = "Danila Bredikhin", email = "danila@stanford.edu" },
 ]
-urls.Documentation = "https://scverse.github.io/shadows"
-urls.Source = "https://github.com/scverse/shadows"
-urls.Home-page = "https://github.com/scverse/shadows"
-requires-python = ">=3.10"
-license = {file = "LICENSE"}
 readme = "README.md"
-dynamic = ["version"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: OS Independent",
+    "Development Status :: 3 - Alpha",
+    "Topic :: Scientific/Engineering :: Bio-Informatics",
+    "Intended Audience :: Science/Research"
+]
 dependencies = [
 ]
+dynamic = ["version"]
+
+[project.urls]
+Documentation = "https://scverse.github.io/shadows"
+Source = "https://github.com/scverse/shadows"
+Home-page = "https://github.com/scverse/shadows"
 
 [project.optional-dependencies]
 dev = [
-    # dev version generation
+    "setuptools_scm",
 ]
 doc = [
     "sphinx",
@@ -46,6 +52,10 @@ test = [
     "scipy",
     "pytest",
     "pytest-cov",
+    "zarr",
+    "pqdata",
+    "mudata",
+    "anndata",
 ]
 all = [
     "scipy",
@@ -53,28 +63,54 @@ all = [
     "mudata >= 0.2",
 ]
 
-[tool.coverage.run]
-source = ["shadows"]
-omit = [
-    "**/test_*.py",
-]
-
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-xfail_strict = true
-addopts = [
-    # '-Werror',  # if 3rd party libs raise DeprecationWarnings, just use filterwarnings below
-    '--import-mode=importlib',  # allow using test files with same name
-]
-filterwarnings = [
-    # 'ignore:.*mode is deprecated:DeprecationWarning',
+python_files = "test_*.py"
+testpaths = [
+    "./tests", # unit tests
 ]
 
-[tool.isort]
-multi_line_output = 3
-profile = "black"
-skip = []
+[tool.black]
+line-length = 100
+target-version = ['py39']
 
-[tool.jupytext]
-formats = "ipynb,md"
+[tool.hatch.version]
+source = "vcs"
 
+[tool.hatch.build.hooks.vcs]
+version-file = "src/shadows/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/shadows"]
+
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/docs",
+]
+
+[tool.ruff]
+src = ["src"]
+
+[tool.ruff.format]
+docstring-code-format = true
+
+[tool.ruff.lint]
+select = [
+    "E",   # Error detected by Pycodestyle
+    "F",   # Errors detected by Pyflakes
+    "W",   # Warning detected by Pycodestyle
+    "UP",  # pyupgrade
+    "I",   # isort
+    "TCH", # manage type checking blocks
+    "ICN", # Follow import conventions
+    "PTH", # Pathlib instead of os.path
+    "PT",  # Pytest conventions
+]
+ignore = [
+    # line too long -> we accept long comment lines; formatter gets rid of long code lines
+    "E501",
+    # Do not assign a lambda expression, use a def -> AnnData allows lambda expression assignments,
+    "E731",
+    # allow I, O, l as variable names -> I is the identity matrix, i, j, k, l is reasonable indexing notation
+    "E741",
+]

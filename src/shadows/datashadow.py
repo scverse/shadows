@@ -540,7 +540,7 @@ class DataShadow:
 
         self.file.close()
 
-    def reopen(self, mode: str, file: Optional[str] = None):
+    def reopen(self, mode: str, file: Optional[str] = None) -> None:
         if self._format == "zarr":
             import zarr
 
@@ -569,7 +569,7 @@ class DataShadow:
             self.close()
             self.file = h5py.File(file, mode=mode)
         else:
-            return self
+            return 
 
         # Update ._group in all elements
         for key in ["obs", "var", "obsm", "varm", "obsp", "varp", "uns", "layers"]:
@@ -581,7 +581,7 @@ class DataShadow:
                 if isinstance(elem, ElemShadow):
                     elem._update_group(self.file[path.join(self.root, key)])
 
-        return self
+        return 
 
     def __repr__(self):
         s = ""
@@ -640,7 +640,7 @@ class DataShadow:
                         clear_cache=clear_cache,
                     )
 
-    def write(self, *args, **kwargs):
+    def write(self, *args, **kwargs) -> None:
         if self.is_view:
             raise ValueError("Views cannot write data to the file.")
         if (
@@ -655,7 +655,17 @@ class DataShadow:
             )
         else:
             self._push_changes(*args, **kwargs)
-        return self
+        return 
+
+    def reopen_and_write(self, mode: str = "r+", *args, **kwargs) -> None:
+        original_mode = self.file.mode
+        self.reopen(mode)
+        try:
+            self.write(*args, **kwargs)
+        except Exception as e:
+            warn(f"An error occurred while writing the changes:\n{e}")
+        finally:
+            self.reopen(original_mode)
 
     # Laziness
 

@@ -24,20 +24,24 @@ The shadows library aims to implement the following features:
 
 - [x] AnnDataShadow and MuDataShadow for Zarr files.
 
-- [ ] AnnDataShadow and MuDataShadow for Parquet-based serialization.
+- [ ] AnnDataShadow and MuDataShadow for Parquet-based serialization ([pqdata](https://github.com/gtca/pqdata)).
 
-- [ ] Data shadows for Laminate files on S3 storage.
+- [ ] Data shadows for `.pqdata` files on S3 storage.
 
 
 ### Shadow objects
 
-[Example notebook](/docs/examples/shadow-objects.ipynb) | [More features](/docs/examples/shadows-features.ipynb)
-
-Briefly, it simply works like this:
+Briefly, shadow objects simply work like this:
 
 ```py
 from shadows import *
 ash = AnnDataShadow("pbmc3k.h5ad")
 msh = MuDataShadow("pbmc5k_citeseq.h5mu")
 ```
+
+All the various features are showcased in the following tutorials:
+
+- [Getting started with shadow objects](/docs/examples/shadow-objects.ipynb)
+
+- [Advanced features of shadow objects](/docs/examples/shadows-features.ipynb)
 
