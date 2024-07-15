@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import get_args, Optional
 from collections.abc import MutableMapping
 from functools import cached_property, partial
 from os import path
@@ -7,8 +7,13 @@ from warnings import warn
 import h5py
 
 # For simplicity, use AnnData read_elem/write_elem
-from anndata._io.specs import read_elem, write_elem
-from anndata.compat import H5Group, ZarrGroup
+from anndata._io.specs import write_elem
+from anndata.compat import H5Array, H5Group, ZarrArray, ZarrGroup
+from .compat import PqArray, PqGroup, read_elem
+
+ArrayStorageType = ZarrArray | H5Array | PqArray
+GroupStorageType = ZarrGroup | H5Group | PqGroup
+StorageType = ArrayStorageType | GroupStorageType
 
 RUNECACHED = "\u1401"
 RUNECACHEDALT = "\u25bc"
@@ -124,7 +129,7 @@ class ElemShadow(MutableMapping):
         else:
             value_elem = self._group[value]
             # is_group = type(value_elem).__name__ == 'Group'  # h5py.Group, zarr.hierarchy.Group
-            is_group = isinstance(value_elem, (H5Group, ZarrGroup))
+            is_group = isinstance(value_elem, get_args(GroupStorageType))
 
             # Return the nested ElemShadow
             if value_path in self._nested:
@@ -142,7 +147,11 @@ class ElemShadow(MutableMapping):
                         pass
 
             elif self._array_backend == "numpy" and self._table_backend == "pandas":
-                value_out = read_elem(self._group[value])
+                # HOTFIX
+                if self._group[value].__class__.__module__ == "pqdata.core":
+                    value_out = read_elem(self._group[value], _format="parquet")
+                else:
+                    value_out = read_elem(self._group[value])
 
             else:
                 if (
@@ -202,7 +211,7 @@ class ElemShadow(MutableMapping):
                         assert value.shape[1] == self._n_vars, "Shape mismatch"
 
         if key in self._elems:
-            if isinstance(self._group[key], h5py.Group):
+            if isinstance(self._group[key], get_args(GroupStorageType)):
                 self._nested[value_path] = value
             else:
                 self._cache[value_path] = value
@@ -349,7 +358,7 @@ class RawElemShadow(ElemShadow):
     @cached_property
     def __n_obs(self):
         x = self._group["X"]
-        if isinstance(x, h5py.Dataset):
+        if isinstance(x, get_args(ArrayStorageType)):
             n_obs = x.shape[0]
         else:
             n_obs = x.attrs["shape"][0]
@@ -373,7 +382,7 @@ class RawElemShadow(ElemShadow):
     def __n_vars(self):
         if "var" in self._group:
             var = self._group["var"]
-            if isinstance(var, h5py.Dataset):
+            if isinstance(var, get_args(ArrayStorageType)):
                 n_vars = var.shape[0]
 
             else:
@@ -384,7 +393,7 @@ class RawElemShadow(ElemShadow):
                 n_vars = var[index].shape[0]
         else:
             x = self._group["X"]
-            if isinstance(x, h5py.Dataset):
+            if isinstance(x, get_args(ArrayStorageType)):
                 n_vars = x.shape[1]
             else:
                 n_vars = x.attrs["shape"][1]

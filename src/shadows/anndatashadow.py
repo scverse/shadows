@@ -28,6 +28,8 @@ class AnnDataShadow(DataShadow):
         if shadow._format == "zarr":
             filename = shadow.file.store.path
             mode = "r+" if not shadow.file.read_only else "r"
+        elif shadow._format == "parquet":
+            raise NotImplementedError("Parquet format is not supported for views.")
         else:
             filename = shadow.file.filename
             mode = shadow.file.mode

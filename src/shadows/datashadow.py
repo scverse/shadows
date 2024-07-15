@@ -2,22 +2,23 @@ import ctypes
 from functools import cached_property
 import logging
 from os import path
-from typing import Literal, Optional, Union
+from typing import get_args, Literal, Optional, Union
 from warnings import warn
 
 # FIXME: import only when needed
 import h5py
 
 # For simplicity, use AnnData read_elem/write_elem
-from anndata._io.specs import read_elem
+from anndata._io.specs import read_elem as ad_read_elem
 from anndata._core.index import _normalize_indices
 from anndata.compat import H5Array, H5Group, ZarrArray, ZarrGroup
 
 from .elemshadow import ElemShadow, _get_backend_reader
+from .compat import PqArray, PqGroup, read_elem
 
 # FIXME: in anndata._types now
-ArrayStorageType = Union[ZarrArray, H5Array]
-GroupStorageType = Union[ZarrGroup, H5Group]
+ArrayStorageType = Union[ZarrArray, H5Array, PqArray]
+GroupStorageType = Union[ZarrGroup, H5Group, PqGroup]
 StorageType = Union[ArrayStorageType, GroupStorageType]
 
 
@@ -31,25 +32,42 @@ class DataShadow:
         array_backend: str = "numpy",
         table_backend: str = "pandas",
         mode: str = "r",
-        format: Optional[Literal["hdf5", "zarr"]] = None,
+        format: Literal["hdf5", "zarr", "parquet", "h5", "pq", "pqdata"] | None = None,
         lazy: bool = False,
+        parent_format: str | None = None,
     ):
         if format is None:
             logging.info("No format provided, trying to infer from the file extension")
             if filepath.endswith(".zarr"):
                 format = "zarr"
+            elif filepath.endswith(".pqdata"):
+                format = "parquet"
             else:
-                format = "hdf5"
+                # NOTE: prioritizing the file extension over the parent format
+                # allows to mix formats, e.g. store modalities in .zarr or .hdf5 files
+                if parent_format is not None:
+                    format = parent_format
+                else:
+                    format = "hdf5"
+        
+        # map the shorthands to the full names
+        if format == "h5":
+            format = "hdf5"
+        elif format in ("pq", "pqdata"):
+            format = "parquet"
         
         if format == "hdf5":
             import h5py
         elif format == "zarr":
             import zarr
+        elif format == "parquet":
+            import pqdata
 
         if path.exists(filepath):
             if format == "zarr":
                 self.file = zarr.open(filepath, mode=mode)
-                self.root = "/"
+            elif format == "parquet":
+                self.file = pqdata.open(filepath, mode=mode)
             else:
                 # fallback to hdf5 by default
                 if format != "hdf5":
@@ -57,7 +75,7 @@ class DataShadow:
                         f"Falling back to hdf5, provided format is '{format}' and not 'hdf5' or 'zarr'"
                     )
                 self.file = h5py.File(filepath, mode=mode)
-                self.root = "/"
+            self.root = "/"
         else:
             root = "/"
             file_exists = False
@@ -74,6 +92,8 @@ class DataShadow:
             if file_exists:
                 if format == "zarr":
                     self.file = zarr.open(filepath, mode=mode)
+                elif format == "parquet":
+                    self.file = pqdata.open(filepath, mode=mode)
                 else:
                     # fallback to hdf5 by default
                     if format != "hdf5":
@@ -90,7 +110,7 @@ class DataShadow:
         self._array_backend = array_backend
         self._table_backend = table_backend
         self._ids = {"self": id(self)}
-        self._format = "zarr" if format == "zarr" else "hdf5"
+        self._format = format
 
         # View-related attributes
         self._is_view = False
@@ -105,6 +125,8 @@ class DataShadow:
         if shadow._format == "zarr":
             filename = shadow.file.store.path
             mode = "r+" if not shadow.file.read_only else "r"
+        elif shadow._format == "parquet":
+            raise NotImplementedError("Parquet format is not supported for views.")
         else:
             filename = shadow.file.filename
             mode = shadow.file.mode
@@ -155,12 +177,12 @@ class DataShadow:
         columns = {}
 
         # Deal with legacy
-        if isinstance(obs, ArrayStorageType):
+        if isinstance(obs, get_args(ArrayStorageType)):
             if self._table_backend == "pandas":
                 from pandas import DataFrame
 
                 # FIXME: categorical columns?
-                table = DataFrame(read_elem(obs))
+                table = DataFrame(read_elem(obs, _format=self._format))
 
                 if self.is_view:
                     return table.__getitem__(self._oidx)
@@ -173,7 +195,7 @@ class DataShadow:
                 )
 
         if self._table_backend == "pandas":
-            table = read_elem(obs)
+            table = read_elem(obs, _format=self._format)
 
             if self.is_view:
                 # return table.__getitem__(self._oidx)
@@ -183,7 +205,7 @@ class DataShadow:
 
         # else (only for AnnData >=0.8)
         for key, value in obs.items():
-            col = read_elem(value)
+            col = read_elem(value, _format=self._format)
             # Patch categorical parsing for polars
             if self._table_backend == "polars":
                 if (
@@ -214,12 +236,12 @@ class DataShadow:
         columns = {}
 
         # Deal with legacy
-        if isinstance(var, ArrayStorageType):
+        if isinstance(var, get_args(ArrayStorageType)):
             if self._table_backend == "pandas":
                 from pandas import DataFrame
 
                 # FIXME: categorical columns?
-                table = DataFrame(read_elem(var))
+                table = DataFrame(read_elem(var, _format=self._format))
                 if self.is_view:
                     return table.__getitem__(self._vidx)
 
@@ -231,7 +253,7 @@ class DataShadow:
                 )
 
         if self._table_backend == "pandas":
-            table = read_elem(var)
+            table = read_elem(var, _format=self._format)
 
             if self.is_view:
                 return table.__getitem__(self._vidx)
@@ -240,7 +262,7 @@ class DataShadow:
 
         # else
         for key, value in var.items():
-            col = read_elem(value)
+            col = read_elem(value, _format=self._format)
             # Patch categorical parsing for polars
             if self._table_backend == "polars":
                 if (
@@ -274,7 +296,7 @@ class DataShadow:
         attr = self.file[self.root][axis]
 
         # Handle legacy
-        if isinstance(attr, ArrayStorageType):
+        if isinstance(attr, get_args(ArrayStorageType)):
             attr_df = self.getattr(axis)
             if "index" in attr_df.columns:
                 names = Index(attr_df["index"].values)
@@ -329,7 +351,7 @@ class DataShadow:
     @cached_property
     def _n_obs(self):
         obs = self.file[self.root]["obs"]
-        if isinstance(obs, ArrayStorageType):
+        if isinstance(obs, get_args(ArrayStorageType)):
             n_obs = obs.shape[0]
         else:
             index = "_index"
@@ -352,7 +374,7 @@ class DataShadow:
     @cached_property
     def _n_vars(self):
         var = self.file[self.root]["var"]
-        if isinstance(var, ArrayStorageType):
+        if isinstance(var, get_args(ArrayStorageType)):
             n_vars = var.shape[0]
 
         else:
@@ -490,7 +512,7 @@ class DataShadow:
             )
             for key in root.keys():
                 # if hasattr(root[key], "keys"):
-                if isinstance(root[key], (H5Group, ZarrGroup)) and hasattr(
+                if isinstance(root[key], get_args(GroupStorageType)) and hasattr(
                     root[key], "keys"
                 ):
                     s[key] = map_get_keys(root[key])
@@ -570,6 +592,8 @@ class DataShadow:
             self.file = h5py.File(file, mode=mode)
         else:
             return 
+        
+        # FIXME: parquet support
 
         # Update ._group in all elements
         for key in ["obs", "var", "obsm", "varm", "obsp", "varp", "uns", "layers"]:

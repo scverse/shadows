@@ -22,6 +22,7 @@ class MuDataShadow(DataShadow):
             if all(m in mods for m in modorder_raw):
                 modorder = [m for m in modorder_raw if m in mods]
 
+        kwargs["parent_format"] = self._format
         self.mod = {
             k: AnnDataShadow(f"{filepath}/mod/{k}", *args, **kwargs) for k in modorder
         }
