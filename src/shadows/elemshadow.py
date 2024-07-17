@@ -1,14 +1,13 @@
-from typing import get_args, Optional
 from collections.abc import MutableMapping
 from functools import cached_property, partial
-from os import path
+from pathlib import Path
+from typing import get_args
 from warnings import warn
-
-import h5py
 
 # For simplicity, use AnnData read_elem/write_elem
 from anndata._io.specs import write_elem
 from anndata.compat import H5Array, H5Group, ZarrArray, ZarrGroup
+
 from .compat import PqArray, PqGroup, read_elem
 
 ArrayStorageType = ZarrArray | H5Array | PqArray
@@ -97,12 +96,12 @@ class ElemShadow(MutableMapping):
         self,
         group_storage,
         key: str,
-        cache: Optional[dict] = None,
-        n_obs: Optional[int] = None,
-        n_vars: Optional[int] = None,
+        cache: dict | None = None,
+        n_obs: int | None = None,
+        n_vars: int | None = None,
         array_backend: str = "numpy",
         table_backend: str = "pandas",
-        is_view: Optional[bool] = False,
+        is_view: bool | None = False,
         idx=None,
     ):
         self._group = group_storage
@@ -121,7 +120,7 @@ class ElemShadow(MutableMapping):
         self._idx = idx
 
     def __getitem__(self, value):
-        value_path = path.join(self._key, value)
+        value_path = str(Path(self._key) / value)
         if value_path in self._cache:
             return self._cache[value_path]
         elif value in self._newelems:
@@ -177,13 +176,9 @@ class ElemShadow(MutableMapping):
             return value_out
 
     def __setitem__(self, key, value):
-        value_path = path.join(self._key, key)
+        value_path = str(Path(self._key) / key)
 
-        if (
-            self._key.endswith("obsm")
-            or self._key.endswith("obsp")
-            or self._key.endswith("layers")
-        ):
+        if self._key.endswith("obsm") or self._key.endswith("obsp") or self._key.endswith("layers"):
             if self._n_obs is None:
                 if key in self._elems:
                     self._n_obs = self._group[key].shape[0]
@@ -193,11 +188,7 @@ class ElemShadow(MutableMapping):
                 if self._key.endswith("obsp"):
                     assert value.shape[1] == self._n_obs, "Shape mismatch"
 
-        if (
-            self._key.endswith("varm")
-            or self._key.endswith("varp")
-            or self._key.endswith("layers")
-        ):
+        if self._key.endswith("varm") or self._key.endswith("varp") or self._key.endswith("layers"):
             if self._n_vars is None:
                 if key in self._elems:
                     self._n_vars = self._group[key].shape[0]
@@ -222,9 +213,7 @@ class ElemShadow(MutableMapping):
         if key in self._newelems:
             del self._newelems[key]
         else:
-            raise NotImplementedError(
-                "Cannot delete data " "that already exists in the file"
-            )
+            raise NotImplementedError("Cannot delete data " "that already exists in the file")
 
     def __contains__(self, value):
         if value in self._elems or value in self._newelems:
@@ -259,12 +248,8 @@ class ElemShadow(MutableMapping):
         key_elems_str, new_elems_str = [], []
 
         if len(self._elems) > 0:
-            key_elems_cached = [
-                path.join(self._key, e) in self._cache for e in self._elems
-            ]
-            key_elems_cached_str = [
-                RUNECACHED if e_cached else "" for e_cached in key_elems_cached
-            ]
+            key_elems_cached = [str(Path(self._key) / e) in self._cache for e in self._elems]
+            key_elems_cached_str = [RUNECACHED if e_cached else "" for e_cached in key_elems_cached]
             # TODO: RUNECACHEDALT
             key_elems_str = list(
                 map(lambda xs: "".join(xs), zip(self._elems, key_elems_cached_str))
@@ -275,7 +260,7 @@ class ElemShadow(MutableMapping):
 
         all_elems_str = key_elems_str + new_elems_str
         if len(all_elems_str) > 0:
-            s += f"{path.basename(self._key)}:\t{', '.join(all_elems_str)}\n"
+            s += f"{Path(self._key).name}:\t{', '.join(all_elems_str)}\n"
 
         return s
 
@@ -287,7 +272,7 @@ class ElemShadow(MutableMapping):
             for key in keys:
                 write_elem(self._group, key, self._newelems[key])
                 if not clear_cache:
-                    self._cache[path.join(self._key, key)] = self._newelems[key]
+                    self._cache[str(Path(self._key) / key)] = self._newelems[key]
                 del self._newelems[key]
             self._elems = list(self._group.keys())
 
@@ -303,9 +288,9 @@ class RawElemShadow(ElemShadow):
         group_storage,
         key: str,
         file: str,
-        cache: Optional[dict] = None,
-        n_obs: Optional[int] = None,
-        n_vars: Optional[int] = None,
+        cache: dict | None = None,
+        n_obs: int | None = None,
+        n_vars: int | None = None,
         array_backend: str = "numpy",
         table_backend: str = "pandas",
         is_view: bool = False,
@@ -416,7 +401,7 @@ class RawElemShadow(ElemShadow):
         storage_group = self._group["varm"] if "varm" in self._elems else dict()
         return ElemShadow(
             storage_group,
-            key=path.join(self._group.name, "varm"),
+            key=str(Path(self._group.name) / "varm"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,

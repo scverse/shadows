@@ -1,25 +1,24 @@
 import ctypes
-from functools import cached_property
 import logging
-from os import path
-from typing import get_args, Literal, Optional, Union
+from functools import cached_property
+from pathlib import Path
+from typing import Literal, get_args
 from warnings import warn
 
 # FIXME: import only when needed
 import h5py
+from anndata._core.index import _normalize_indices
 
 # For simplicity, use AnnData read_elem/write_elem
-from anndata._io.specs import read_elem as ad_read_elem
-from anndata._core.index import _normalize_indices
 from anndata.compat import H5Array, H5Group, ZarrArray, ZarrGroup
 
-from .elemshadow import ElemShadow, _get_backend_reader
 from .compat import PqArray, PqGroup, read_elem
+from .elemshadow import ElemShadow, _get_backend_reader
 
 # FIXME: in anndata._types now
-ArrayStorageType = Union[ZarrArray, H5Array, PqArray]
-GroupStorageType = Union[ZarrGroup, H5Group, PqGroup]
-StorageType = Union[ArrayStorageType, GroupStorageType]
+ArrayStorageType = ZarrArray | H5Array | PqArray
+GroupStorageType = ZarrGroup | H5Group | PqGroup
+StorageType = ArrayStorageType | GroupStorageType
 
 
 RUNECACHED = "\u1401"
@@ -49,13 +48,13 @@ class DataShadow:
                     format = parent_format
                 else:
                     format = "hdf5"
-        
+
         # map the shorthands to the full names
         if format == "h5":
             format = "hdf5"
         elif format in ("pq", "pqdata"):
             format = "parquet"
-        
+
         if format == "hdf5":
             import h5py
         elif format == "zarr":
@@ -63,7 +62,7 @@ class DataShadow:
         elif format == "parquet":
             import pqdata
 
-        if path.exists(filepath):
+        if Path(filepath).exists():
             if format == "zarr":
                 self.file = zarr.open(filepath, mode=mode)
             elif format == "parquet":
@@ -83,11 +82,9 @@ class DataShadow:
             if not isinstance(filepath, str):
                 filepath = str(filepath)
             while not file_exists and i <= filepath.count("/"):
-                path_elements = list(
-                    map(lambda x: x[::-1], filepath[::-1].split("/", i))
-                )
-                filename, root = path_elements[-1], path.join(*path_elements[:-1][::-1])
-                file_exists = path.exists(filename)
+                path_elements = list(map(lambda x: x[::-1], filepath[::-1].split("/", i)))
+                filename, root = path_elements[-1], Path.joinpath(*path_elements[:-1][::-1])
+                file_exists = Path(filename).exists()
                 i += 1
             if file_exists:
                 if format == "zarr":
@@ -132,7 +129,7 @@ class DataShadow:
             mode = shadow.file.mode
 
         if shadow.root != "/":
-            filename = path.join(filename, shadow.root)
+            filename = str(Path(filename) / shadow.root)
         view = DataShadow(
             filename,
             array_backend=shadow._array_backend,
@@ -152,17 +149,13 @@ class DataShadow:
             view._ref = shadow._ref
             if shadow._oidx is not None:
                 if isinstance(shadow._oidx, slice):
-                    r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(
-                        oidx
-                    )
+                    r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(oidx)
                     view._oidx = slice(r.start, r.stop, r.step)
                 else:
                     view._oidx = shadow._oidx[oidx]
             if shadow._vidx is not None:
                 if isinstance(shadow._vidx, slice):
-                    r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(
-                        vidx
-                    )
+                    r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(vidx)
                     view._vidx = slice(r.start, r.stop, r.step)
                 else:
                     view._vidx = shadow._vidx[vidx]
@@ -208,10 +201,7 @@ class DataShadow:
             col = read_elem(value, _format=self._format)
             # Patch categorical parsing for polars
             if self._table_backend == "polars":
-                if (
-                    "encoding-type" in value.attrs
-                    and value.attrs["encoding-type"] == "categorical"
-                ):
+                if "encoding-type" in value.attrs and value.attrs["encoding-type"] == "categorical":
                     import polars as pl
 
                     col = pl.Series(col.astype(str)).cast(pl.Categorical)
@@ -265,10 +255,7 @@ class DataShadow:
             col = read_elem(value, _format=self._format)
             # Patch categorical parsing for polars
             if self._table_backend == "polars":
-                if (
-                    "encoding-type" in value.attrs
-                    and value.attrs["encoding-type"] == "categorical"
-                ):
+                if "encoding-type" in value.attrs and value.attrs["encoding-type"] == "categorical":
                     import polars as pl
 
                     col = pl.Series(col.astype(str)).cast(pl.Categorical)
@@ -318,7 +305,7 @@ class DataShadow:
                 names = Index(self.file[self.root][axis][index][:])
 
         # only string index
-        if all((isinstance(e, bytes) for e in names)):
+        if all(isinstance(e, bytes) for e in names):
             try:
                 names = names.str.decode("utf-8")
             except AttributeError:
@@ -402,12 +389,10 @@ class DataShadow:
 
     @cached_property
     def _obsm(self):
-        group_storage = (
-            self.file[self.root]["obsm"] if "obsm" in self.file[self.root] else dict()
-        )
+        group_storage = self.file[self.root]["obsm"] if "obsm" in self.file[self.root] else dict()
         return ElemShadow(
             group_storage,
-            key=path.join(self.root, "obsm"),
+            key=str(Path(self.root) / "obsm"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,
@@ -426,13 +411,11 @@ class DataShadow:
 
     @cached_property
     def _varm(self):
-        group_storage = (
-            self.file[self.root]["varm"] if "varm" in self.file[self.root] else dict()
-        )
+        group_storage = self.file[self.root]["varm"] if "varm" in self.file[self.root] else dict()
         return ElemShadow(
             group_storage,
             # self.file[self.root]["varm"],
-            key=path.join(self.root, "varm"),
+            key=str(Path(self.root) / "varm"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,
@@ -451,13 +434,11 @@ class DataShadow:
 
     @cached_property
     def _obsp(self):
-        group_storage = (
-            self.file[self.root]["obsp"] if "obsp" in self.file[self.root] else dict()
-        )
+        group_storage = self.file[self.root]["obsp"] if "obsp" in self.file[self.root] else dict()
         return ElemShadow(
             group_storage,
             # self.file[self.root]["obsp"],
-            key=path.join(self.root, "obsp"),
+            key=str(Path(self.root) / "obsp"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,
@@ -475,13 +456,11 @@ class DataShadow:
     def _varp(self):
         # if "varp" not in self.file[self.root]:
         #    return EmptySlot()
-        group_storage = (
-            self.file[self.root]["varp"] if "varp" in self.file[self.root] else dict()
-        )
+        group_storage = self.file[self.root]["varp"] if "varp" in self.file[self.root] else dict()
         return ElemShadow(
             group_storage,
             # self.file[self.root]["varp"],
-            key=path.join(self.root, "varp"),
+            key=str(Path(self.root) / "varp"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,
@@ -512,9 +491,7 @@ class DataShadow:
             )
             for key in root.keys():
                 # if hasattr(root[key], "keys"):
-                if isinstance(root[key], get_args(GroupStorageType)) and hasattr(
-                    root[key], "keys"
-                ):
+                if isinstance(root[key], get_args(GroupStorageType)) and hasattr(root[key], "keys"):
                     s[key] = map_get_keys(root[key])
             return s
 
@@ -541,12 +518,7 @@ class DataShadow:
         ]
         _slots = [f"_{slot}" for slot in slots]
         for key in keys:
-            if (
-                key.startswith("/")
-                or key.startswith("mod/")
-                or key in _slots
-                or key in slots
-            ):
+            if key.startswith("/") or key.startswith("mod/") or key in _slots or key in slots:
                 obj_id = id(self.__dict__[key])
                 obj = ctypes.cast(obj_id, ctypes.py_object).value
 
@@ -562,27 +534,20 @@ class DataShadow:
 
         self.file.close()
 
-    def reopen(self, mode: str, file: Optional[str] = None) -> None:
+    def reopen(self, mode: str, file: str | None = None) -> None:
         if self._format == "zarr":
             import zarr
 
         if not self.file:
             if file is None:
-                raise ValueError(
-                    "The connection is closed but no new file name is provided."
-                )
+                raise ValueError("The connection is closed but no new file name is provided.")
             self.close()
             if self._format == "zarr":
                 self.file = zarr.open(file, mode=mode)
             else:
                 self.file = h5py.File(file, mode=mode)
         elif self._format == "zarr":
-            if (
-                self.file.read_only
-                and mode != "r"
-                or mode == "r"
-                and not self.file.read_only
-            ):
+            if self.file.read_only and mode != "r" or mode == "r" and not self.file.read_only:
                 file = file or self.file.store.path
                 self.close()
                 self.file = zarr.open(file, mode=mode)
@@ -591,8 +556,8 @@ class DataShadow:
             self.close()
             self.file = h5py.File(file, mode=mode)
         else:
-            return 
-        
+            return
+
         # FIXME: parquet support
 
         # Update ._group in all elements
@@ -603,9 +568,9 @@ class DataShadow:
             elif hasattr(self, key):
                 elem = getattr(self, key)
                 if isinstance(elem, ElemShadow):
-                    elem._update_group(self.file[path.join(self.root, key)])
+                    elem._update_group(self.file[str(Path(self.root) / key)])
 
-        return 
+        return
 
     def __repr__(self):
         s = ""
@@ -647,10 +612,10 @@ class DataShadow:
     def _sanitize(self):
         pass
 
-    def obs_vector(self, key: str, layer: Optional[str] = None):
+    def obs_vector(self, key: str, layer: str | None = None):
         return self.obs[key].values
 
-    def var_vector(self, key: str, layer: Optional[str] = None):
+    def var_vector(self, key: str, layer: str | None = None):
         return self.var[key].values
 
     # Writing
@@ -679,7 +644,7 @@ class DataShadow:
             )
         else:
             self._push_changes(*args, **kwargs)
-        return 
+        return
 
     def reopen_and_write(self, mode: str = "r+", *args, **kwargs) -> None:
         original_mode = self.file.mode

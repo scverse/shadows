@@ -1,18 +1,14 @@
-from .datashadow import DataShadow
-
-from typing import Optional
 from functools import cached_property
-from os import path
+from pathlib import Path
 
 import numpy as np
+from anndata import AnnData
 
 # For simplicity, use AnnData read_elem/write_elem
 from anndata._core.index import _normalize_indices
-from anndata import AnnData
 
-
+from .datashadow import DataShadow
 from .elemshadow import ElemShadow, RawElemShadow, _get_backend_reader
-
 
 RUNECACHED = "\u1401"
 RUNECACHEDALT = "\u25bc"
@@ -35,9 +31,10 @@ class AnnDataShadow(DataShadow):
             mode = shadow.file.mode
 
         if shadow.root != "/":
-            filename = path.join(
-                filename,
-                shadow.root[1:] if shadow.root.startswith("/") else shadow.root,
+            filename = (
+                str(Path(filename) / shadow.root[1:])
+                if shadow.root.startswith("/")
+                else shadow.root
             )
         view = AnnDataShadow(
             filename,
@@ -57,36 +54,24 @@ class AnnDataShadow(DataShadow):
         if shadow.is_view:
             view._ref = shadow._ref
             if shadow._oidx is not None:
-                if isinstance(shadow._oidx, slice) and isinstance(
-                    oidx, (int, np.integer, slice)
-                ):
-                    r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(
-                        oidx
-                    )
-                    if isinstance(r, (int, np.integer)):
+                if isinstance(shadow._oidx, slice) and isinstance(oidx, int | np.integer | slice):
+                    r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(oidx)
+                    if isinstance(r, int | np.integer):
                         view._oidx = np.array([r])
                     view._oidx = slice(r.start, r.stop, r.step)
                 elif isinstance(shadow._oidx, slice):
-                    view._oidx = np.arange(*shadow._oidx.indices(shadow._ref.n_obs))[
-                        oidx
-                    ]
+                    view._oidx = np.arange(*shadow._oidx.indices(shadow._ref.n_obs))[oidx]
                 else:
                     view._oidx = shadow._oidx[oidx]
             if shadow._vidx is not None:
-                if isinstance(shadow._vidx, slice) and isinstance(
-                    vidx, (int, np.integer, slice)
-                ):
-                    r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(
-                        vidx
-                    )
-                    if isinstance(r, (int, np.integer)):
+                if isinstance(shadow._vidx, slice) and isinstance(vidx, int | np.integer | slice):
+                    r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(vidx)
+                    if isinstance(r, int | np.integer):
                         view._vidx = np.array([r])
                     else:
                         view._vidx = slice(r.start, r.stop, r.step)
                 elif isinstance(shadow._vidx, slice):
-                    view._vidx = np.arange(*shadow._vidx.indices(shadow._ref.n_vars))[
-                        vidx
-                    ]
+                    view._vidx = np.arange(*shadow._vidx.indices(shadow._ref.n_vars))[vidx]
                 else:
                     view._vidx = shadow._vidx[vidx]
 
@@ -123,13 +108,11 @@ class AnnDataShadow(DataShadow):
     @cached_property
     def _layers(self):
         group_storage = (
-            self.file[self.root]["layers"]
-            if "layers" in self.file[self.root]
-            else dict()
+            self.file[self.root]["layers"] if "layers" in self.file[self.root] else dict()
         )
         return ElemShadow(
             group_storage,
-            key=path.join(self.root, "layers"),
+            key=str(Path(self.root) / "layers"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,
@@ -155,7 +138,7 @@ class AnnDataShadow(DataShadow):
 
         return RawElemShadow(
             group_storage,
-            key=path.join(self.root, "raw"),
+            key=str(Path(self.root) / "raw"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=None,
@@ -198,14 +181,11 @@ class AnnDataShadow(DataShadow):
         if len(self.layers) > 0:
             s += "  " + self.layers.__repr__()
 
-        s += (
-            "\n".join(["  " + line for line in super().__repr__().strip().split("\n")])
-            + "\n"
-        )
+        s += "\n".join(["  " + line for line in super().__repr__().strip().split("\n")]) + "\n"
 
         return s
 
-    def obs_vector(self, key: str, layer: Optional[str] = None):
+    def obs_vector(self, key: str, layer: str | None = None):
         if key not in self.obs.columns and key not in self.var_names:
             key = str.encode(key)
         if key in self.var_names:
@@ -218,7 +198,7 @@ class AnnDataShadow(DataShadow):
 
         return self.obs[key].values
 
-    def var_vector(self, key: str, layer: Optional[str] = None):
+    def var_vector(self, key: str, layer: str | None = None):
         if key not in self.var.columns and key not in self.obs_names:
             key = str.encode(key)
         if key in self.obs_names:

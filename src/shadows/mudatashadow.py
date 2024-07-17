@@ -1,14 +1,12 @@
 from functools import cached_property
-from os import path
-
+from pathlib import Path
 
 # For simplicity, use AnnData read_elem/write_elem
 from anndata._core.index import _normalize_indices
 
-
-from .elemshadow import ElemShadow
-from .datashadow import DataShadow
 from .anndatashadow import AnnDataShadow
+from .datashadow import DataShadow
+from .elemshadow import ElemShadow
 
 
 class MuDataShadow(DataShadow):
@@ -23,9 +21,7 @@ class MuDataShadow(DataShadow):
                 modorder = [m for m in modorder_raw if m in mods]
 
         kwargs["parent_format"] = self._format
-        self.mod = {
-            k: AnnDataShadow(f"{filepath}/mod/{k}", *args, **kwargs) for k in modorder
-        }
+        self.mod = {k: AnnDataShadow(f"{filepath}/mod/{k}", *args, **kwargs) for k in modorder}
         self.n_mod = len(self.mod)
         self.mask = None
 
@@ -47,7 +43,7 @@ class MuDataShadow(DataShadow):
             mode = shadow.file.mode
 
         if shadow.root != "/":
-            filename = path.join(filename, shadow.root)
+            filename = str(Path(filename) / shadow.root)
         view = MuDataShadow(
             filename,
             array_backend=shadow._array_backend,
@@ -67,17 +63,13 @@ class MuDataShadow(DataShadow):
             view._ref = shadow._ref
             if shadow._oidx is not None:
                 if isinstance(shadow._oidx, slice):
-                    r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(
-                        oidx
-                    )
+                    r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(oidx)
                     view._oidx = slice(r.start, r.stop, r.step)
                 else:
                     view._oidx = shadow._oidx[oidx]
             if shadow._vidx is not None:
                 if isinstance(shadow._vidx, slice):
-                    r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(
-                        vidx
-                    )
+                    r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(vidx)
                     view._vidx = slice(r.start, r.stop, r.step)
                 else:
                     view._vidx = shadow._vidx[vidx]
@@ -109,13 +101,11 @@ class MuDataShadow(DataShadow):
     @cached_property
     def _obsmap(self):
         group_storage = (
-            self.file[self.root]["obsmap"]
-            if "obsmap" in self.file[self.root]
-            else dict()
+            self.file[self.root]["obsmap"] if "obsmap" in self.file[self.root] else dict()
         )
         return ElemShadow(
             group_storage,
-            key=path.join(self.root, "obsmap"),
+            key=str(Path(self.root) / "obsmap"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,
@@ -132,13 +122,11 @@ class MuDataShadow(DataShadow):
     @cached_property
     def _varmap(self):
         group_storage = (
-            self.file[self.root]["varmap"]
-            if "varmap" in self.file[self.root]
-            else dict()
+            self.file[self.root]["varmap"] if "varmap" in self.file[self.root] else dict()
         )
         return ElemShadow(
             group_storage,
-            key=path.join(self.root, "varmap"),
+            key=str(Path(self.root) / "varmap"),
             cache=self.__dict__,
             n_obs=self.n_obs,
             n_vars=self.n_vars,
@@ -176,7 +164,7 @@ class MuDataShadow(DataShadow):
         for key in ["mod"]:
             elem = getattr(self, key)
             if isinstance(elem, ElemShadow):
-                elem._update_group(self.file[path.join(self.root, key)])
+                elem._update_group(self.file[str(Path(self.root) / key)])
 
         return self
 
@@ -189,10 +177,7 @@ class MuDataShadow(DataShadow):
         else:
             s = f"MuData Shadow object with n_obs × n_vars = {self.n_obs} × {self.n_vars}\n"
 
-        s += (
-            "\n".join(["  " + line for line in super().__repr__().strip().split("\n")])
-            + "\n"
-        )
+        s += "\n".join(["  " + line for line in super().__repr__().strip().split("\n")]) + "\n"
 
         # obsmap and varmap
         for k in ["obsmap", "varmap"]:
