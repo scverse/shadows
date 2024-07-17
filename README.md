@@ -24,7 +24,7 @@ The shadows library aims to implement the following features:
 
 - [x] AnnDataShadow and MuDataShadow for Zarr files.
 
-- [ ] AnnDataShadow and MuDataShadow for Parquet-based serialization ([pqdata](https://github.com/gtca/pqdata)).
+- [x] AnnDataShadow and MuDataShadow for Parquet-based serialization ([pqdata](https://github.com/gtca/pqdata)).
 
 - [ ] Data shadows for `.pqdata` files on S3 storage.
 
