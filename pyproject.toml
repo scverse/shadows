@@ -90,6 +90,7 @@ exclude = [
 
 [tool.ruff]
 src = ["src"]
+exclude = ["src/shadows/_version.py"]
 
 [tool.ruff.format]
 docstring-code-format = true
