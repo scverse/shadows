@@ -23,5 +23,7 @@ def read_elem(*args, **kwargs):
             from pqdata.core import read_elem as pq_read_elem
 
             return pq_read_elem(*args, **kwargs)
+        else:
+            return ad_read_elem(*args, **kwargs)
     else:
         return ad_read_elem(*args, **kwargs)

@@ -35,6 +35,8 @@ class DataShadow:
         lazy: bool = False,
         parent_format: str | None = None,
     ):
+        if not isinstance(filepath, str):
+            filepath = str(filepath)
         if format is None:
             logging.info("No format provided, trying to infer from the file extension")
             if filepath.endswith(".zarr"):
@@ -79,11 +81,11 @@ class DataShadow:
             root = "/"
             file_exists = False
             i = 1
-            if not isinstance(filepath, str):
-                filepath = str(filepath)
             while not file_exists and i <= filepath.count("/"):
                 path_elements = list(map(lambda x: x[::-1], filepath[::-1].split("/", i)))
-                filename, root = path_elements[-1], Path.joinpath(*path_elements[:-1][::-1])
+                filename, root = path_elements[-1], str(
+                    Path(path_elements[-2]).joinpath(*path_elements[:-2][::-1])
+                )
                 file_exists = Path(filename).exists()
                 i += 1
             if file_exists:
