@@ -1,10 +1,11 @@
+from pathlib import Path
 import pytest
 from typing import Optional
 
 from shadows import AnnDataShadow, MuDataShadow
 
-from scipy.sparse import coo_matrix
 import numpy as np
+from scipy.sparse import coo_matrix
 from anndata import AnnData
 from mudata import MuData
 
@@ -207,6 +208,7 @@ class TestViewsAnnData:
 
 
 @pytest.mark.usefixtures("filepath_h5mu")
+@pytest.mark.usefixtures("filepath_mudata_zarr")
 class TestMuData:
     def test_mudata_simple(self, mdata, filepath_h5mu):
         filename = filepath_h5mu
@@ -217,3 +219,19 @@ class TestMuData:
         assert mdata.shape == msh.shape
 
         msh.close()
+
+    def test_anndata_inside_mudata(self, mdata, filepath_h5mu):
+        filename = filepath_h5mu
+        mdata.write(filename)
+
+        mod_x = Path(filename) / "mod" / "x"
+        mod_y = Path(filename) / "mod" / "y"
+
+        ash_x = AnnDataShadow(mod_x)
+        ash_y = AnnDataShadow(mod_y)
+
+        assert ash_x.shape == mdata["x"].shape
+        assert ash_y.shape == mdata["y"].shape
+
+        ash_x.close()
+        ash_y.close()
