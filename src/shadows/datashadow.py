@@ -1,6 +1,7 @@
 import ctypes
 import logging
 from functools import cached_property
+from os import PathLike
 from pathlib import Path
 from typing import Literal, get_args
 from warnings import warn
@@ -22,12 +23,19 @@ StorageType = ArrayStorageType | GroupStorageType
 
 
 RUNECACHED = "\u1401"
+FORMAT_MAP = {
+    "h5": "hdf5",
+    "hdf5": "hdf5",
+    "zarr": "zarr",
+    "pq": "parquet",
+    "pqdata": "parquet",
+}
 
 
 class DataShadow:
     def __init__(
         self,
-        filepath,
+        filepath: PathLike,
         array_backend: str = "numpy",
         table_backend: str = "pandas",
         mode: str = "r",
@@ -35,13 +43,21 @@ class DataShadow:
         lazy: bool = False,
         parent_format: str | None = None,
     ):
-        if not isinstance(filepath, str):
-            filepath = str(filepath)
+        # unify types
+        fpstr = str(filepath)
+        if filepath.__class__.__name__ == "OpenFile":
+            # OpenFile<'file_path'>
+            fpstr = str(filepath.path)
+        elif filepath.__class__.__name__ == "FSMap":
+            # <fsspec.mapping.FSMap at 0x...>
+            fpstr = str(filepath.root)
+        fpath = Path(fpstr)
+
         if format is None:
             logging.info("No format provided, trying to infer from the file extension")
-            if filepath.endswith(".zarr"):
+            if fpath.suffix == ".zarr":
                 format = "zarr"
-            elif filepath.endswith(".pqdata"):
+            elif fpath.suffix == ".pqdata":
                 format = "parquet"
             else:
                 # NOTE: prioritizing the file extension over the parent format
@@ -52,10 +68,24 @@ class DataShadow:
                     format = "hdf5"
 
         # map the shorthands to the full names
-        if format == "h5":
-            format = "hdf5"
-        elif format in ("pq", "pqdata"):
-            format = "parquet"
+        format = FORMAT_MAP.get(format, format)
+
+        # Auto-detect the format for nested modalities
+        # (e.g. m.zarr/mod/x, m.pqdata/mod/y)
+        if "zarr" in fpstr or "pqdata" in fpstr and fpath.suffix not in (".zarr", ".pqdata"):
+            i = 1
+            while i <= fpstr.count("/"):
+                path_elements = list(map(lambda x: x[::-1], fpstr[::-1].split("/", i)))
+                filename, root = path_elements[-1], str(
+                    Path(path_elements[-2]).joinpath(*path_elements[:-2][::-1])
+                )
+                if Path(filename).suffix == ".zarr":
+                    format = "zarr"
+                    break
+                elif Path(filename).suffix == ".pqdata":
+                    format = "parquet"
+                    break
+                i += 1
 
         if format == "hdf5":
             import h5py
@@ -64,35 +94,36 @@ class DataShadow:
         elif format == "parquet":
             import pqdata
 
-        if Path(filepath).exists():
+        if fpath.exists():
             if format == "zarr":
-                self.file = zarr.open(filepath, mode=mode)
+                self.file = zarr.open(fpath, mode=mode)
             elif format == "parquet":
-                self.file = pqdata.open(filepath, mode=mode)
+                self.file = pqdata.open(fpath, mode=mode)
             else:
                 # fallback to hdf5 by default
                 if format != "hdf5":
                     warn(
                         f"Falling back to hdf5, provided format is '{format}' and not 'hdf5' or 'zarr'"
                     )
-                self.file = h5py.File(filepath, mode=mode)
+                self.file = h5py.File(fpath, mode=mode)
             self.root = "/"
         else:
             root = "/"
             file_exists = False
             i = 1
-            while not file_exists and i <= filepath.count("/"):
-                path_elements = list(map(lambda x: x[::-1], filepath[::-1].split("/", i)))
+            while not file_exists and i <= fpstr.count("/"):
+                path_elements = list(map(lambda x: x[::-1], fpstr[::-1].split("/", i)))
                 filename, root = path_elements[-1], str(
                     Path(path_elements[-2]).joinpath(*path_elements[:-2][::-1])
                 )
                 file_exists = Path(filename).exists()
                 i += 1
             if file_exists:
+                format = FORMAT_MAP.get(Path(filename).suffix[1:], format)
                 if format == "zarr":
-                    self.file = zarr.open(filepath, mode=mode)
+                    self.file = zarr.open(filename, mode=mode)
                 elif format == "parquet":
-                    self.file = pqdata.open(filepath, mode=mode)
+                    self.file = pqdata.open(filename, mode=mode)
                 else:
                     # fallback to hdf5 by default
                     if format != "hdf5":
@@ -104,8 +135,36 @@ class DataShadow:
                 # Maybe prepend /mod to the modality name
                 if root not in self.file and f"/mod/{root}" in self.file:
                     self.root = f"/mod/{root}"
+            elif (
+                filepath.__class__.__name__ == "BufferedReader"
+                or filepath.__class__.__name__ == "OpenFile"
+                or filepath.__class__.__name__ == "FSMap"
+            ):
+                # fsspec support
+                fname = filepath
+                try:
+                    from fsspec.core import OpenFile
+
+                    if isinstance(filepath, OpenFile):
+                        fname = filepath.__enter__()
+                        self._callback = fname.__exit__()
+                except ImportError as e:
+                    raise ImportError(
+                        "To read from remote storage or cache, install fsspec: pip install fsspec"
+                    ) from e
+
+                if format == "zarr":
+                    self.file = zarr.open(fname, mode=mode)
+                elif format == "parquet":
+                    self.file = pqdata.open(fname, mode=mode)
+                else:
+                    raise NotImplementedError(
+                        "Only zarr and parquet formats are supported for remote files. "
+                        "HDF5 files have to be downloaded first."
+                    )
+                self.root = "/"
             else:
-                raise FileNotFoundError(f"File {filepath} does not seem to exist")
+                raise FileNotFoundError(f"File {fpstr} does not seem to exist")
         self._array_backend = array_backend
         self._table_backend = table_backend
         self._ids = {"self": id(self)}
@@ -535,6 +594,9 @@ class DataShadow:
             return
 
         self.file.close()
+
+        if hasattr(self, "_callback") and self._callback and callable(self._callback):
+            self._callback()
 
     def reopen(self, mode: str, file: str | None = None) -> None:
         if self._format == "zarr":

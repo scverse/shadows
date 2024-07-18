@@ -21,7 +21,37 @@ class MuDataShadow(DataShadow):
                 modorder = [m for m in modorder_raw if m in mods]
 
         kwargs["parent_format"] = self._format
-        self.mod = {k: AnnDataShadow(f"{filepath}/mod/{k}", *args, **kwargs) for k in modorder}
+        try:
+            self.mod = {
+                k: AnnDataShadow(Path(filepath) / "mod" / k, *args, **kwargs) for k in modorder
+            }
+        except (FileNotFoundError, TypeError) as e:
+            # fsspec.mapping.FSMap
+            try:
+                from fsspec.mapping import FSMap
+
+                if not isinstance(filepath, FSMap):
+                    raise NotImplementedError(
+                        "remote storage support has only been implemented for FSMap interface"
+                    )
+                if filepath.fs.__class__.__name__ != "S3FileSystem":
+                    raise NotImplementedError(
+                        "fsspec.mapping.FSMap has only been implemented for S3FileSystem"
+                    )
+
+                mapper = filepath.fs.get_mapper
+                self.mod = {
+                    k: AnnDataShadow(
+                        mapper(str(Path(filepath.root) / "mod" / k)),
+                        format=self._format,
+                        *args,
+                        **kwargs,
+                    )
+                    for k in modorder
+                }
+            except Exception:
+                raise e
+
         self.n_mod = len(self.mod)
         self.mask = None
 
