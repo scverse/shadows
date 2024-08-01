@@ -7,9 +7,12 @@ from shadows import AnnDataShadow, MuDataShadow
 import numpy as np
 from scipy.sparse import coo_matrix
 from anndata import AnnData
+import mudata
 from mudata import MuData
 
 N, D = 50, 20
+
+mudata.set_options(pull_on_update=False)
 
 
 def matrix(sparse_x: bool = False, n: Optional[int] = None, d: Optional[int] = None):
@@ -208,7 +211,6 @@ class TestViewsAnnData:
 
 
 @pytest.mark.usefixtures("filepath_h5mu")
-@pytest.mark.usefixtures("filepath_mudata_zarr")
 class TestMuData:
     def test_mudata_simple(self, mdata, filepath_h5mu):
         filename = filepath_h5mu
@@ -235,3 +237,34 @@ class TestMuData:
 
         ash_x.close()
         ash_y.close()
+
+    def test_slicing_mudata_int(self, mdata, filepath_h5mu):
+        filename = filepath_h5mu
+        n, d = mdata.shape
+        mdata.write(filename)
+
+        msh = MuDataShadow(filename)
+
+        msh_view = msh[:10, :5]
+        assert msh_view.shape == (10, 5)
+
+        msh_view = msh[:11, :]
+        assert msh_view.shape == (11, d)
+
+        msh_view = msh[:, :7]
+        assert msh_view.shape == (n, 7)
+
+        msh.close()
+
+    def test_slicing_mudata_str(self, mdata, filepath_h5mu):
+        filename = filepath_h5mu
+        n, d = mdata.shape
+        mdata.write(filename)
+
+        msh = MuDataShadow(filename)
+
+        msh_view = msh[:, ["x3", "y5", "x7", "y9"]]
+        assert msh_view.shape == (n, 4)
+        assert msh_view.var_names.to_list() == ["x3", "y5", "x7", "y9"]
+
+        msh.close()
