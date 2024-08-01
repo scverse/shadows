@@ -272,6 +272,9 @@ class DataShadow:
                 table = read_elem(annot, _format=self._format, kind="pyarrow")
 
                 if self.is_view:
+                    import numpy as np
+                    if hasattr(idx.dtype, "type") and issubclass(idx.dtype.type, np.bool_):
+                        return table.filter(idx)
                     return table.__getitem__(idx)
 
                 return table
