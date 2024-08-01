@@ -223,57 +223,53 @@ class DataShadow:
 
         return view
 
-    @cached_property
-    def _obs(self):
+    def _annot(self, axis: Literal["obs", "var", 0, 1]):
+        if axis not in ("obs", "var", 0, 1):
+            raise ValueError(f"axis must be 'obs' or 'var', not {axis}")
+
+        if isinstance(axis, int):
+            axis = "obs" if axis == 0 else "var"
+
+        idx = self._oidx if axis == "obs" else self._vidx
+
         # Use anndata v0.8 spec reader
         reader = _get_backend_reader(self._table_backend, self._lazy)
-        obs = self.file[self.root]["obs"]
+        annot = self.file[self.root][axis]
         columns = {}
 
         # Deal with legacy or parquet files
         # TODO: for legacy files,
         # correct the categories for different backends
         #   categories = {}
-        #   if "__categories" in obs:
-        #       categories = read_elem(obs["__categories"], _format=self._format)
+        #   if "__categories" in annot:
+        #       categories = read_elem(annot["__categories"], _format=self._format)
 
-        if isinstance(obs, get_args(ArrayStorageType)):
+        if isinstance(annot, get_args(ArrayStorageType)):
             if self._table_backend == "pandas":
                 from pandas import DataFrame
 
                 # FIXME: categorical columns?
-                table = DataFrame(read_elem(obs, _format=self._format))
+                table = DataFrame(read_elem(annot, _format=self._format))
 
                 if self.is_view:
-                    return table.iloc[self._oidx]
+                    return table.iloc[idx]
 
                 return table
             elif self._table_backend == "polars":
                 import polars as pl
 
-                table = (
-                    read_elem(obs, _format=self._format)
-                    .reset_index(drop=False)
-                    .rename(columns={"index": "__index_level_0__"})
-                )
-                table = pl.DataFrame(table)
+                table = read_elem(annot, _format=self._format, kind="polars")
 
                 if self.is_view:
-                    return table.__getitem__(self._oidx)
+                    return table.__getitem__(idx)
 
                 return table
             elif self._table_backend == "pyarrow":
-                import pyarrow as pa
 
-                table = (
-                    read_elem(obs, _format=self._format)
-                    .reset_index(drop=False)
-                    .rename(columns={"index": "__index_level_0__"})
-                )
-                table = pa.Table.from_pandas(table)
+                table = read_elem(annot, _format=self._format, kind="pyarrow")
 
                 if self.is_view:
-                    return table.__getitem__(self._oidx)
+                    return table.__getitem__(idx)
 
                 return table
             else:
@@ -283,15 +279,15 @@ class DataShadow:
                 )
 
         if self._table_backend == "pandas":
-            table = read_elem(obs, _format=self._format)
+            table = read_elem(annot, _format=self._format)
 
             if self.is_view:
-                return table.iloc[self._oidx]
+                return table.iloc[idx]
 
             return table
 
         # else (only for AnnData >=0.8)
-        for key, value in obs.items():
+        for key, value in annot.items():
             if key == "__categories":
                 continue
             col = read_elem(value, _format=self._format)
@@ -307,9 +303,15 @@ class DataShadow:
         table = reader(columns)
 
         if self.is_view:
-            return table.__getitem__(self._oidx)
+            if self._table_backend == "pandas":
+                return table.iloc[idx]
+            return table.__getitem__(idx)
 
         return table
+
+    @cached_property
+    def _obs(self):
+        return self._annot("obs")
 
     @property
     def obs(self):
@@ -317,88 +319,7 @@ class DataShadow:
 
     @cached_property
     def _var(self):
-        # Use anndata v0.8 spec reader
-        reader = _get_backend_reader(self._table_backend, self._lazy)
-        var = self.file[self.root]["var"]
-        columns = {}
-
-        # Deal with legacy or parquet files
-        # TODO: for legacy files,
-        # correct the categories for different backends
-        #   categories = {}
-        #   if "__categories" in obs:
-        #       categories = read_elem(var["__categories"], _format=self._format)
-
-        if isinstance(var, get_args(ArrayStorageType)):
-            if self._table_backend == "pandas":
-                from pandas import DataFrame
-
-                # FIXME: categorical columns?
-                table = DataFrame(read_elem(var, _format=self._format))
-                if self.is_view:
-                    return table.iloc[self._vidx]
-
-                return table
-            elif self._table_backend == "polars":
-                import polars as pl
-
-                table = (
-                    read_elem(var, _format=self._format)
-                    .reset_index(drop=False)
-                    .rename(columns={"index": "__index_level_0__"})
-                )
-                table = pl.DataFrame(table)
-
-                if self.is_view:
-                    return table.__getitem__(self._oidx)
-
-                return table
-            elif self._table_backend == "pyarrow":
-                import pyarrow as pa
-
-                table = (
-                    read_elem(var, _format=self._format)
-                    .reset_index(drop=False)
-                    .rename(columns={"index": "__index_level_0__"})
-                )
-                table = pa.Table.from_pandas(table)
-
-                if self.is_view:
-                    return table.__getitem__(self._oidx)
-
-                return table
-            else:
-                raise NotImplementedError(
-                    "Alternative backends are not available "
-                    "for the legacy AnnData/MuData specification."
-                )
-
-        if self._table_backend == "pandas":
-            table = read_elem(var, _format=self._format)
-
-            if self.is_view:
-                return table.iloc[self._vidx]
-
-            return table
-
-        # else (only for AnnData >=0.8)
-        for key, value in var.items():
-            col = read_elem(value, _format=self._format)
-            if self._table_backend == "polars":
-                if "encoding-type" in value.attrs and value.attrs["encoding-type"] == "categorical":
-                    import polars as pl
-
-                    col = pl.Series(col.astype(str)).cast(pl.Categorical)
-            else:
-                raise NotImplementedError("Alternative backends are not fully supported just yet.")
-            columns[key] = col
-
-        table = reader(columns)
-
-        if self.is_view:
-            return table.__getitem__(self._vidx)
-
-        return table
+        return self._annot("var")
 
     @property
     def var(self):
@@ -424,15 +345,34 @@ class DataShadow:
                     names = Index(attr_df["index"])
                 elif "__index_level_0__" in attr_df.column_names:
                     names = Index(attr_df["__index_level_0__"])
-                else:
-                    raise ValueError(f"Empty {axis}_names")
+                elif hasattr(attr_df, "schema"):
+                    if hasattr(attr_df.schema, "metadata") and b"pandas" in attr_df.schema.metadata:
+                        import json
+
+                        pd_meta = json.loads(attr_df.schema.metadata[b"pandas"])
+                        names = Index(attr_df[pd_meta["index_columns"][0]].to_numpy())
+                    else:
+                        raise ValueError(f"Empty {axis}_names")
             elif hasattr(attr_df, "columns"):
                 if "index" in attr_df.columns:
                     names = Index(attr_df["index"])
                 elif "__index_level_0__" in attr_df.columns:
                     names = Index(attr_df["__index_level_0__"])
                 else:
-                    raise ValueError(f"Empty {axis}_names")
+                    from pyarrow import parquet as pq
+
+                    # TODO: Refactor e.g. by implementing read_elem_schema
+                    filename = self.file[self.root][axis].path
+                    schema = pq.read_schema(filename)
+
+                    import json
+
+                    try:
+                        pd_meta = json.loads(schema.metadata[b"pandas"])
+                    except KeyError as e:
+                        raise KeyError(f"Metadata from pandas not found in the schema: {e}")
+
+                    names = Index(attr_df[pd_meta["index_columns"][0]])
             else:
                 raise ValueError(f"Empty {axis}_names")
 
