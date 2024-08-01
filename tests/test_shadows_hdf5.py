@@ -183,6 +183,25 @@ class TestViewsAnnData:
 
         ash.close()
 
+    def test_bool_slicing(self, adata, filepath_h5ad):
+        np.random.seed(42)
+        ix = np.random.choice(adata.obs_names, size=20, replace=False)
+        sel = adata.obs_names.isin(ix)
+        adata.obs["sel"] = sel
+
+        filename = filepath_h5ad
+        adata.write(filename)
+
+        ash = AnnDataShadow(filename)
+        view = adata[adata.obs.sel, :]
+        ash_view = ash[ash.obs.sel, :]
+
+        assert ash_view.shape == view.shape
+        assert ash_view.shape == (len(ix), adata.n_vars)
+        assert ash_view.X.shape == (len(ix), adata.n_vars)
+
+        ash.close()
+
     def test_nested_views(self, adata, filepath_h5ad):
         filename = filepath_h5ad
         adata.write(filename)
