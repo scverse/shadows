@@ -230,13 +230,47 @@ class DataShadow:
         obs = self.file[self.root]["obs"]
         columns = {}
 
-        # Deal with legacy
+        # Deal with legacy or parquet files
+        # TODO: for legacy files,
+        # correct the categories for different backends
+        #   categories = {}
+        #   if "__categories" in obs:
+        #       categories = read_elem(obs["__categories"], _format=self._format)
+
         if isinstance(obs, get_args(ArrayStorageType)):
             if self._table_backend == "pandas":
                 from pandas import DataFrame
 
                 # FIXME: categorical columns?
                 table = DataFrame(read_elem(obs, _format=self._format))
+
+                if self.is_view:
+                    return table.iloc[self._oidx]
+
+                return table
+            elif self._table_backend == "polars":
+                import polars as pl
+
+                table = (
+                    read_elem(obs, _format=self._format)
+                    .reset_index(drop=False)
+                    .rename(columns={"index": "__index_level_0__"})
+                )
+                table = pl.DataFrame(table)
+
+                if self.is_view:
+                    return table.__getitem__(self._oidx)
+
+                return table
+            elif self._table_backend == "pyarrow":
+                import pyarrow as pa
+
+                table = (
+                    read_elem(obs, _format=self._format)
+                    .reset_index(drop=False)
+                    .rename(columns={"index": "__index_level_0__"})
+                )
+                table = pa.Table.from_pandas(table)
 
                 if self.is_view:
                     return table.__getitem__(self._oidx)
@@ -252,20 +286,22 @@ class DataShadow:
             table = read_elem(obs, _format=self._format)
 
             if self.is_view:
-                # return table.__getitem__(self._oidx)
                 return table.iloc[self._oidx]
 
             return table
 
         # else (only for AnnData >=0.8)
         for key, value in obs.items():
+            if key == "__categories":
+                continue
             col = read_elem(value, _format=self._format)
-            # Patch categorical parsing for polars
             if self._table_backend == "polars":
                 if "encoding-type" in value.attrs and value.attrs["encoding-type"] == "categorical":
                     import polars as pl
 
                     col = pl.Series(col.astype(str)).cast(pl.Categorical)
+            else:
+                raise NotImplementedError("Alternative backends are not fully supported just yet.")
             columns[key] = col
 
         table = reader(columns)
@@ -286,7 +322,13 @@ class DataShadow:
         var = self.file[self.root]["var"]
         columns = {}
 
-        # Deal with legacy
+        # Deal with legacy or parquet files
+        # TODO: for legacy files,
+        # correct the categories for different backends
+        #   categories = {}
+        #   if "__categories" in obs:
+        #       categories = read_elem(var["__categories"], _format=self._format)
+
         if isinstance(var, get_args(ArrayStorageType)):
             if self._table_backend == "pandas":
                 from pandas import DataFrame
@@ -294,7 +336,35 @@ class DataShadow:
                 # FIXME: categorical columns?
                 table = DataFrame(read_elem(var, _format=self._format))
                 if self.is_view:
-                    return table.__getitem__(self._vidx)
+                    return table.iloc[self._vidx]
+
+                return table
+            elif self._table_backend == "polars":
+                import polars as pl
+
+                table = (
+                    read_elem(var, _format=self._format)
+                    .reset_index(drop=False)
+                    .rename(columns={"index": "__index_level_0__"})
+                )
+                table = pl.DataFrame(table)
+
+                if self.is_view:
+                    return table.__getitem__(self._oidx)
+
+                return table
+            elif self._table_backend == "pyarrow":
+                import pyarrow as pa
+
+                table = (
+                    read_elem(var, _format=self._format)
+                    .reset_index(drop=False)
+                    .rename(columns={"index": "__index_level_0__"})
+                )
+                table = pa.Table.from_pandas(table)
+
+                if self.is_view:
+                    return table.__getitem__(self._oidx)
 
                 return table
             else:
@@ -307,19 +377,20 @@ class DataShadow:
             table = read_elem(var, _format=self._format)
 
             if self.is_view:
-                return table.__getitem__(self._vidx)
+                return table.iloc[self._vidx]
 
             return table
 
-        # else
+        # else (only for AnnData >=0.8)
         for key, value in var.items():
             col = read_elem(value, _format=self._format)
-            # Patch categorical parsing for polars
             if self._table_backend == "polars":
                 if "encoding-type" in value.attrs and value.attrs["encoding-type"] == "categorical":
                     import polars as pl
 
                     col = pl.Series(col.astype(str)).cast(pl.Categorical)
+            else:
+                raise NotImplementedError("Alternative backends are not fully supported just yet.")
             columns[key] = col
 
         table = reader(columns)
@@ -345,12 +416,23 @@ class DataShadow:
 
         # Handle legacy
         if isinstance(attr, get_args(ArrayStorageType)):
-            attr_df = self.getattr(axis)
-            if "index" in attr_df.columns:
-                names = Index(attr_df["index"].values)
-            elif len(attr_df.columns) > 0:
-                index = attr_df.columns[0]
-                names = Index(attr_df[index].values)
+            attr_df = getattr(self, axis)
+            if hasattr(attr_df, "index"):
+                names = attr_df.index
+            elif hasattr(attr_df, "column_names"):  # pyarrow
+                if "index" in attr_df.column_names:
+                    names = Index(attr_df["index"])
+                elif "__index_level_0__" in attr_df.column_names:
+                    names = Index(attr_df["__index_level_0__"])
+                else:
+                    raise ValueError(f"Empty {axis}_names")
+            elif hasattr(attr_df, "columns"):
+                if "index" in attr_df.columns:
+                    names = Index(attr_df["index"])
+                elif "__index_level_0__" in attr_df.columns:
+                    names = Index(attr_df["__index_level_0__"])
+                else:
+                    raise ValueError(f"Empty {axis}_names")
             else:
                 raise ValueError(f"Empty {axis}_names")
 
@@ -359,11 +441,19 @@ class DataShadow:
             if "_index" in attr.attrs:
                 index = attr.attrs["_index"]
 
-            if self.is_view:
-                indices = self._oidx if axis == "obs" else self._vidx
-                names = Index(self.file[self.root][axis][index][:][indices])
-            else:
-                names = Index(self.file[self.root][axis][index][:])
+            try:
+                if self.is_view:
+                    indices = self._oidx if axis == "obs" else self._vidx
+                    names = Index(self.file[self.root][axis][index][:][indices])
+                else:
+                    names = Index(self.file[self.root][axis][index][:])
+            except KeyError:
+                index = "__index_level_0__"
+                if self.is_view:
+                    indices = self._oidx if axis == "obs" else self._vidx
+                    names = Index(self.file[self.root][axis][index][:][indices])
+                else:
+                    names = Index(self.file[self.root][axis][index][:])
 
         # only string index
         if all(isinstance(e, bytes) for e in names):

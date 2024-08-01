@@ -68,6 +68,9 @@ class MuDataShadow(DataShadow):
         if shadow._format == "zarr":
             filename = shadow.file.store.path
             mode = "r+" if not shadow.file.read_only else "r"
+        elif shadow._format == "parquet":
+            filename = shadow.file.path
+            mode = "r+"  # FIXME
         else:
             filename = shadow.file.filename
             mode = shadow.file.mode
@@ -111,17 +114,22 @@ class MuDataShadow(DataShadow):
                 mod_obs = oidx
             else:
                 mod_obs = shadow.obsmap[mod][oidx]
+                if hasattr(mod_obs, "columns") and mod in mod_obs.columns:
+                    mod_obs = mod_obs[mod].values
                 mod_obs = mod_obs[mod_obs != 0] - 1
 
             if isinstance(vidx, slice) and vidx.start is None and vidx.stop is None:
                 mod_vars = vidx
             else:
                 mod_vars = shadow.varmap[mod][vidx]
+                if hasattr(mod_obs, "columns") and mod in mod_obs.columns:
+                    mod_obs = mod_obs[mod].values
                 mod_vars = mod_vars[mod_vars != 0] - 1
 
             view.mod[mod] = modality[mod_obs, mod_vars]
             view.mod[mod]._ref = shadow[mod]
-            modality.file.close()
+            if hasattr(modality.file, "close") and callable(modality.file.close):
+                modality.file.close()
 
             # TODO: avoid creating a non-view AnnData connection
             # in the MuDataShadow() constructor above

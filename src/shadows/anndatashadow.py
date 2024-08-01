@@ -25,7 +25,9 @@ class AnnDataShadow(DataShadow):
             filename = shadow.file.store.path
             mode = "r+" if not shadow.file.read_only else "r"
         elif shadow._format == "parquet":
-            raise NotImplementedError("Parquet format is not supported for views.")
+            filename = shadow.file.path
+            mode = "r+"  # FIXME
+            # raise NotImplementedError("Parquet format is not supported for views.")
         else:
             filename = shadow.file.filename
             mode = shadow.file.mode
@@ -34,7 +36,7 @@ class AnnDataShadow(DataShadow):
             filename = (
                 str(Path(filename) / shadow.root[1:])
                 if shadow.root.startswith("/")
-                else shadow.root
+                else str(Path(filename) / shadow.root)
             )
         view = AnnDataShadow(
             filename,

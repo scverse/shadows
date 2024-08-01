@@ -158,19 +158,58 @@ class ElemShadow(MutableMapping):
                     and value_elem.attrs["encoding-type"] == "array"
                 ):
                     reader = _get_backend_reader(self._array_backend)
-                else:
+                elif (
+                    "encoding-type" in value_elem.attrs
+                    and value_elem.attrs["encoding-type"] == "dataframe"
+                ):
                     reader = _get_backend_reader(self._table_backend)
+                else:
+                    reader = _get_backend_reader(self._array_backend)
                 # TODO: avoid reading the whole dataset
-                value_out = reader(self._group[value][:])
+                if isinstance(self._group, PqGroup):
+                    value_out = read_elem(self._group[value], _format="parquet")
+                    try:
+                        value_out = reader(value_out)
+                    except ValueError as e:
+                        if hasattr(value_out, "todense") and callable(value_out.todense):
+                            value_out = reader(value_out.todense())
+                        else:
+                            raise e
+                else:
+                    try:
+                        value_out = reader(self._group[value][:])
+                    except TypeError:
+                        # e.g. sparse matrices
+                        value_out = read_elem(self._group[value])
+                        try:
+                            value_out = reader(value_out)
+                        except ValueError as e:
+                            if hasattr(value_out, "todense") and callable(value_out.todense):
+                                value_out = reader(value_out.todense())
+                            else:
+                                raise e
 
+            # slicing behaviour depends on the attribute
+            key_name = Path(self._key).name
             if self.is_view:
-                idx0, idx1 = self._idx
-                if idx0 is not None and idx1 is not None:
-                    value_out = value_out[idx0, idx1]
-                elif idx0 is not None:
-                    value_out = value_out.__getitem__(idx0)
-                elif idx1 is not None:
-                    value_out = value_out.__getitem__(idx1)
+                oidx, vidx = self._idx
+                if self._key.endswith("layers"):
+                    if oidx is not None and vidx is not None:
+                        value_out = value_out[oidx, vidx]
+                    elif oidx is not None:
+                        value_out = value_out.__getitem__(oidx)
+                    elif vidx is not None:
+                        value_out = value_out[:, vidx]
+                elif key_name.startswith("obs"):
+                    if oidx is not None:
+                        value_out = value_out.__getitem__(oidx)
+                        if key_name == "obsp":
+                            value_out = value_out[:, oidx]
+                elif key_name.startswith("var"):
+                    if vidx is not None:
+                        value_out = value_out.__getitem__(vidx)
+                        if key_name == "varp":
+                            value_out = value_out[:, vidx]
 
             self._cache[value_path] = value_out
             return value_out
