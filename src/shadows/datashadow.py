@@ -262,7 +262,7 @@ class DataShadow:
 
                 if self.is_view:
                     import numpy as np
-                    if isinstance(idx.dtype, pl.Boolean) or issubclass(idx.dtype.type, np.bool_):
+                    if isinstance(idx.dtype, pl.Boolean) or hasattr(idx.dtype, "type") and issubclass(idx.dtype.type, np.bool_):
                         return table.filter(idx)
                     return table.__getitem__(idx)
 
