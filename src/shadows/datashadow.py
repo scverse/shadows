@@ -262,7 +262,12 @@ class DataShadow:
 
                 if self.is_view:
                     import numpy as np
-                    if isinstance(idx.dtype, pl.Boolean) or hasattr(idx.dtype, "type") and issubclass(idx.dtype.type, np.bool_):
+
+                    if (
+                        isinstance(idx.dtype, pl.Boolean)
+                        or hasattr(idx.dtype, "type")
+                        and issubclass(idx.dtype.type, np.bool_)
+                    ):
                         return table.filter(idx)
                     return table.__getitem__(idx)
 
@@ -273,6 +278,7 @@ class DataShadow:
 
                 if self.is_view:
                     import numpy as np
+
                     if hasattr(idx.dtype, "type") and issubclass(idx.dtype.type, np.bool_):
                         return table.filter(idx)
                     return table.__getitem__(idx)
@@ -698,6 +704,16 @@ class DataShadow:
                     except AttributeError:
                         # Do not extract column names from the pre-0.8 AnnData
                         key_elems = ["..."]
+                        # For parquet files, keys can be read from the schema
+                        if self._format == "parquet" or self._format == "pyarrow":
+                            try:
+                                from pyarrow import parquet as pq
+
+                                filename = self.file[self.root][key].path
+                                schema = pq.read_schema(filename)
+                                key_elems = schema.names
+                            except Exception as e:
+                                raise e
                     if len(key_elems) > 0:
                         s += f"{key}:\t{', '.join(key_elems)}\n"
             else:  # complex keys
