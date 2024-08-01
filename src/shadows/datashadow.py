@@ -502,7 +502,12 @@ class DataShadow:
             if isinstance(self._oidx, slice):
                 return len(range(n_obs).__getitem__(self._oidx))
             else:
-                return len(self._oidx)
+                import numpy as np
+
+                if issubclass(self._oidx.dtype.type, np.bool_):
+                    return self._oidx.sum()
+                else:
+                    return len(self._oidx)
         return n_obs
 
     @property
@@ -526,7 +531,12 @@ class DataShadow:
             if isinstance(self._vidx, slice):
                 return len(range(n_vars).__getitem__(self._vidx))
             else:
-                return len(self._vidx)
+                import numpy as np
+
+                if issubclass(self._vidx.dtype.type, np.bool_):
+                    return self._vidx.sum()
+                else:
+                    return len(self._vidx)
 
         return n_vars
 
