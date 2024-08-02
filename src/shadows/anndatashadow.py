@@ -70,7 +70,8 @@ class AnnDataShadow(DataShadow):
                         shadow_idx.dtype.type, np.bool_
                     ):
                         if hasattr(idx.dtype, "type") and issubclass(idx.dtype.type, np.bool_):
-                            setattr(view, attr, shadow_idx[idx])
+                            view_idx = shadow_idx[shadow_idx] = idx
+                            setattr(view, attr, view_idx)
                         else:
                             setattr(view, attr, shadow_idx[np.where(idx)[0]])
                     else:
