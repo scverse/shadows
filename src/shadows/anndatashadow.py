@@ -55,28 +55,26 @@ class AnnDataShadow(DataShadow):
 
         if shadow.is_view:
             view._ref = shadow._ref
-            if shadow._oidx is not None:
-                if isinstance(shadow._oidx, slice) and isinstance(oidx, int | np.integer | slice):
-                    r = range(*shadow._oidx.indices(shadow._ref.n_obs)).__getitem__(oidx)
-                    if isinstance(r, int | np.integer):
-                        view._oidx = np.array([r])
-                    view._oidx = slice(r.start, r.stop, r.step)
-                elif isinstance(shadow._oidx, slice):
-                    view._oidx = np.arange(*shadow._oidx.indices(shadow._ref.n_obs))[oidx]
-                else:
-                    view._oidx = shadow._oidx[oidx]
-            if shadow._vidx is not None:
-                if isinstance(shadow._vidx, slice) and isinstance(vidx, int | np.integer | slice):
-                    r = range(*shadow._vidx.indices(shadow._ref.n_vars)).__getitem__(vidx)
-                    if isinstance(r, int | np.integer):
-                        view._vidx = np.array([r])
+            for attr, idx in (("_oidx", oidx), ("_vidx", vidx)):
+                shadow_idx = getattr(shadow, attr)
+                if shadow_idx is not None:
+                    n_attr = shadow._ref.n_obs if attr == "_oidx" else shadow._ref.n_vars
+                    if isinstance(shadow_idx, slice) and isinstance(idx, int | np.integer | slice):
+                        r = range(*shadow_idx.indices(n_attr)).__getitem__(idx)
+                        if isinstance(r, int | np.integer):
+                            setattr(view, attr, np.array([r]))
+                        setattr(view, attr, slice(r.start, r.stop, r.step))
+                    elif isinstance(shadow_idx, slice):
+                        setattr(view, attr, np.arange(*shadow_idx.indices(shadow._ref.n_obs))[idx])
+                    elif hasattr(shadow_idx.dtype, "type") and issubclass(
+                        shadow_idx.dtype.type, np.bool_
+                    ):
+                        if hasattr(idx.dtype, "type") and issubclass(idx.dtype.type, np.bool_):
+                            setattr(view, attr, shadow_idx[idx])
+                        else:
+                            setattr(view, attr, shadow_idx[np.where(idx)[0]])
                     else:
-                        view._vidx = slice(r.start, r.stop, r.step)
-                elif isinstance(shadow._vidx, slice):
-                    view._vidx = np.arange(*shadow._vidx.indices(shadow._ref.n_vars))[vidx]
-                else:
-                    view._vidx = shadow._vidx[vidx]
-
+                        setattr(view, attr, shadow_idx[idx])
         return view
 
     @cached_property
