@@ -250,6 +250,10 @@ class DataShadow:
 
                 # FIXME: categorical columns?
                 table = DataFrame(read_elem(annot, _format=self._format))
+                if "_index" in annot.attrs:
+                    table = table.set_index(annot.attrs["_index"])
+                elif self._format == "hdf5" and "index" in (e[0] for e in annot.dtype.descr):
+                    table = table.set_index("index")
 
                 if self.is_view:
                     return table.iloc[idx]
@@ -531,7 +535,6 @@ class DataShadow:
         group_storage = self.file[self.root]["varm"] if "varm" in self.file[self.root] else dict()
         return ElemShadow(
             group_storage,
-            # self.file[self.root]["varm"],
             key=str(Path(self.root) / "varm"),
             cache=self.__dict__,
             n_obs=self.n_obs,

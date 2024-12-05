@@ -109,7 +109,26 @@ class ElemShadow(MutableMapping):
         self._cache = cache
         self._n_obs = n_obs
         self._n_vars = n_vars
-        self._elems = list(self._group.keys())
+
+        try:
+            self._elems = list(self._group.keys())
+        except AttributeError as e:
+            # this block below is only to handle legacy files
+            # where this can be a structured array
+            import numpy as np
+
+            in_memory = np.array(self._group)
+            fields = in_memory.dtype.fields
+            if fields is not None:
+                self._elems = list(fields.keys())
+                if self._key not in cache:
+                    self._cache[self._key] = dict()
+                    for value in self._elems:
+                        value_path = str(Path(self._key) / value)
+                        self._cache[value_path] = in_memory[value]
+            else:
+                raise AttributeError("Cannot handle this legacy file: " + str(e)) from e
+
         self._newelems = dict()
         self._nested = dict()
 
