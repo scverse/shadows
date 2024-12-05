@@ -113,8 +113,9 @@ class ElemShadow(MutableMapping):
         try:
             self._elems = list(self._group.keys())
         except AttributeError as e:
-            # this block below is only to handle legacy files
-            # where this can be a structured array
+            # This block below is only to handle legacy files
+            # where this can be a structured array.
+            # Legacy file support will get deprecated in later versions.
             import numpy as np
 
             in_memory = np.array(self._group)
@@ -125,7 +126,30 @@ class ElemShadow(MutableMapping):
                     self._cache[self._key] = dict()
                     for value in self._elems:
                         value_path = str(Path(self._key) / value)
-                        self._cache[value_path] = in_memory[value]
+                        value_out = in_memory[value]
+
+                        key_name = Path(self._key).name
+                        if is_view:
+                            oidx, vidx = idx
+                            if self._key.endswith("layers"):
+                                if oidx is not None and vidx is not None:
+                                    value_out = value_out[oidx, vidx]
+                                elif oidx is not None:
+                                    value_out = value_out.__getitem__(oidx)
+                                elif vidx is not None:
+                                    value_out = value_out[:, vidx]
+                            elif key_name.startswith("obs"):
+                                if oidx is not None:
+                                    value_out = value_out.__getitem__(oidx)
+                                    if key_name == "obsp":
+                                        value_out = value_out[:, oidx]
+                            elif key_name.startswith("var"):
+                                if vidx is not None:
+                                    value_out = value_out.__getitem__(vidx)
+                                    if key_name == "varp":
+                                        value_out = value_out[:, vidx]
+
+                        self._cache[value_path] = value_out
             else:
                 raise AttributeError("Cannot handle this legacy file: " + str(e)) from e
 

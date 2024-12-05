@@ -557,7 +557,6 @@ class DataShadow:
         group_storage = self.file[self.root]["obsp"] if "obsp" in self.file[self.root] else dict()
         return ElemShadow(
             group_storage,
-            # self.file[self.root]["obsp"],
             key=str(Path(self.root) / "obsp"),
             cache=self.__dict__,
             n_obs=self.n_obs,
@@ -579,7 +578,6 @@ class DataShadow:
         group_storage = self.file[self.root]["varp"] if "varp" in self.file[self.root] else dict()
         return ElemShadow(
             group_storage,
-            # self.file[self.root]["varp"],
             key=str(Path(self.root) / "varp"),
             cache=self.__dict__,
             n_obs=self.n_obs,
