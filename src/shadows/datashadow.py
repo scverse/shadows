@@ -252,7 +252,7 @@ class DataShadow:
                 }
 
             if self._table_backend == "pandas":
-                from pandas import DataFrame, Categorical
+                from pandas import Categorical, DataFrame
 
                 table = DataFrame(read_elem(annot, _format=self._format))
                 if "_index" in annot.attrs:
