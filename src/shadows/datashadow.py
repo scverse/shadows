@@ -237,23 +237,34 @@ class DataShadow:
         annot = self.file[self.root][axis]
         columns = {}
 
-        # Deal with legacy or parquet files
-        # TODO: for legacy files,
-        # correct the categories for different backends
-        #   categories = {}
-        #   if "__categories" in annot:
-        #       categories = read_elem(annot["__categories"], _format=self._format)
-
         if isinstance(annot, get_args(ArrayStorageType)):
-            if self._table_backend == "pandas":
-                from pandas import DataFrame
+            # Deal with legacy or parquet files
 
-                # FIXME: categorical columns?
+            # For legacy files,
+            # correct the categories for different backends.
+            categories = {}
+            if "uns" in self.file:
+                uns_keys = list(self.file["uns"])
+                cat_keys = [key for key in uns_keys if key.endswith("_categories")]
+                categories = {
+                    key.removesuffix("_categories"): [e.decode() for e in self.file["uns"][key]]
+                    for key in cat_keys
+                }
+
+            if self._table_backend == "pandas":
+                from pandas import DataFrame, Categorical
+
                 table = DataFrame(read_elem(annot, _format=self._format))
                 if "_index" in annot.attrs:
                     table = table.set_index(annot.attrs["_index"])
                 elif self._format == "hdf5" and "index" in (e[0] for e in annot.dtype.descr):
                     table = table.set_index("index")
+
+                for column in table.columns:
+                    if column in categories:
+                        table[column] = Categorical.from_codes(
+                            table[column], categories=categories[column]
+                        )
 
                 if self.is_view:
                     return table.iloc[idx]
@@ -262,7 +273,16 @@ class DataShadow:
             elif self._table_backend == "polars":
                 import polars as pl
 
-                table = read_elem(annot, _format=self._format, kind="polars")
+                cat_map = lambda col: lambda x: pl.Series(categories[col])[x]
+
+                table = read_elem(annot, _format=self._format)
+                table = pl.DataFrame(table)
+
+                for column in table.columns:
+                    if column in categories:
+                        table = table.with_columns(
+                            [pl.col(column).map(cat_map(column)).cast(pl.Categorical).alias(column)]
+                        )
 
                 if self.is_view:
                     import numpy as np
@@ -277,8 +297,19 @@ class DataShadow:
 
                 return table
             elif self._table_backend == "pyarrow":
+                import pandas as pd
+                import pyarrow as pa
 
-                table = read_elem(annot, _format=self._format, kind="pyarrow")
+                table = read_elem(annot, _format=self._format)
+                table = pd.DataFrame(table)
+
+                for column in table.columns:
+                    if column in categories:
+                        table[column] = pd.Categorical.from_codes(
+                            table[column], categories=categories[column]
+                        )
+
+                table = pa.Table.from_pandas(table)
 
                 if self.is_view:
                     import numpy as np
